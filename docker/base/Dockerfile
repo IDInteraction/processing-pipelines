@@ -8,4 +8,4 @@ FROM ubuntu:14.04
 
 MAINTAINER Robert Haines <robert.haines@manchester.ac.uk>
 
-RUN apt-get update && apt-get clean
+RUN apt-get update && apt-get upgrade -y && apt-get clean
