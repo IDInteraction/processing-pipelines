@@ -1,5 +1,5 @@
 #
-# Video processing image for the IDInteraction object tracking pipeline.
+# Video processing image for the IDInteraction processing pipelines.
 #
 # Robert Haines, University of Manchester.
 #
