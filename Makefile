@@ -12,18 +12,24 @@ else
 	docker = sudo docker
 endif
 
-.PHONY: all base clean really-clean
+.PHONY: all base video clean really-clean
 
-all: .base
+all: .base .video
 
-# Use empty targets to help make but hide them as dotfiles.
+# Use empty targets to help make, but hide them as dotfiles.
 base: .base
 .base: docker/base/Dockerfile
 	$(docker) build -t idinteraction/base docker/base/
 	touch .base
 
+video: .video
+.video: .base docker/video/Dockerfile
+	$(docker) build -t idinteraction/video docker/video/
+	touch .video
+
 upload: all
 	$(docker) push idinteraction/base
+	$(docker) push idinteraction/video
 
 clean:
 	-$(docker) stop `$(docker) ps -aq`
@@ -31,5 +37,6 @@ clean:
 	-$(docker) images -q --filter "dangling=true" | xargs $(docker) rmi
 
 really-clean: clean
-	rm -f .base
+	rm -f .base .video
 	-$(docker) rmi idinteraction/base
+	-$(docker) rmi idinteraction/video
