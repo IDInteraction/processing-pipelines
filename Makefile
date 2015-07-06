@@ -23,8 +23,8 @@ base: .base
 	touch .base
 
 video: .video
-.video: .base docker/video/Dockerfile
-	$(docker) build -t idinteraction/video docker/video/
+.video: .base video/Dockerfile
+	$(docker) build -t idinteraction/video video/
 	touch .video
 
 upload: all
