@@ -18,8 +18,8 @@ all: .base .video
 
 # Use empty targets to help make, but hide them as dotfiles.
 base: .base
-.base: docker/base/Dockerfile
-	$(docker) build -t idinteraction/base docker/base/
+.base: base/Dockerfile
+	$(docker) build -t idinteraction/base base/
 	touch .base
 
 video: .video
