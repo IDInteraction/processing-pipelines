@@ -12,10 +12,17 @@ The only software needed to run these pipelines is [Docker][1]. Please see the
 
 All of our Docker images are available from the [Docker Hub][3].
 
-* [Video processing image][4]:
+* To get the latest version of the [video processing image][4] run:
+
   ```
   $ docker pull idinteraction/video
   ```
+
+Images are tagged every so often to denote a stable, production quality release. A specific tagged image can be pulled like so:
+
+```
+$ docker pull idinteraction/<image>:<tag>
+```
 
 ## Running the pipelines
 
