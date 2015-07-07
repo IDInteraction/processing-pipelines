@@ -23,7 +23,7 @@ base: .base
 	touch .base
 
 video: .video
-.video: .base video/Dockerfile
+.video: .base video/Dockerfile video/resources/Makefile
 	$(docker) build -t idinteraction/video video/
 	touch .video
 
