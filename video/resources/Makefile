@@ -31,15 +31,15 @@ $(back-dir):
 
 $(front-dir)/%.mp4: $(in-dir)/%.mov | $(front-dir)
 	rm -f $@.tmp
-	mencoder $< -vf crop=640:360:640:0 -nosound -ovc x264 -o $@.tmp
+	mencoder $< -vf crop=640:360:640:0 -really-quiet -nosound -ovc x264 -o $@.tmp
 	mv $@.tmp $@
 
 $(side-dir)/%.mp4: $(in-dir)/%.mov | $(side-dir)
 	rm -f $@.tmp
-	mencoder $< -vf crop=640:360:0:0 -nosound -ovc x264 -o $@.tmp
+	mencoder $< -vf crop=640:360:0:0 -really-quiet -nosound -ovc x264 -o $@.tmp
 	mv $@.tmp $@
 
 $(back-dir)/%.mp4: $(in-dir)/%.mov | $(back-dir)
 	rm -f $@.tmp
-	mencoder $< -vf crop=640:360:640:360 -nosound -ovc x264 -o $@.tmp
+	mencoder $< -vf crop=640:360:640:360 -really-quiet -nosound -ovc x264 -o $@.tmp
 	mv $@.tmp $@
