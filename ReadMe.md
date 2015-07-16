@@ -42,7 +42,7 @@ side and back view of each participant.
 The directory holding the raw video streams and the directory to which the processed video streams will be saved must be specified when running the docker image. It is advisable to mount the input directory as 'read-only'.
 
 The following command will run the video processing pipeline on any videos it
-finds in the input directory (edit the parts in <angle brackets> to suit your
+finds in the input directory (edit the parts in `<angle brackets>` to suit your
 set up):
 
 ```shell
