@@ -52,8 +52,7 @@ set up):
 $ docker run -it --name=<name> \
  -v <input-directory>:/opt/idinteraction/video/in:ro \
  -v <output-directory>:/opt/idinteraction/video/out \
- idinteraction/video \
- make
+ idinteraction/video
 ```
 
 [1]: https://www.docker.com/

@@ -15,3 +15,6 @@ ENV IDI_VIDEO_HOME $IDI_HOME/video
 RUN mkdir $IDI_VIDEO_HOME
 COPY resources/ $IDI_VIDEO_HOME
 WORKDIR $IDI_VIDEO_HOME
+
+ENTRYPOINT ["/usr/bin/make"]
+CMD ["all"]
