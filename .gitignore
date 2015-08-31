@@ -1,7 +1,6 @@
 *~
 *.bak
 .base
+.cppmt
 .video
-.tracking
-tracking/CppMT/
-tracking/resources/cmt
+cppmt/CppMT/
