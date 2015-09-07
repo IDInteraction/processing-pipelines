@@ -39,13 +39,13 @@ upload: all
 	$(docker) push idinteraction/video
 
 clean:
+	rm -f .base .cppmt .video
 	$(MAKE) -C cppmt clean
 	-$(docker) stop `$(docker) ps -aq`
 	-$(docker) rm -fv `$(docker) ps -aq`
 	-$(docker) images -q --filter "dangling=true" | xargs $(docker) rmi
 
 really-clean: clean
-	rm -f .base .cppmt .video
 	-$(docker) rmi idinteraction/base
 	-$(docker) rmi idinteraction/cppmt
 	-$(docker) rmi idinteraction/video
