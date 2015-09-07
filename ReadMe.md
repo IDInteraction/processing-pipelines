@@ -18,7 +18,8 @@ All of our Docker images are available from the [Docker Hub][3].
   $ docker pull idinteraction/video
   ```
 
-Images are tagged every so often to denote a stable, production quality release. A specific tagged image can be pulled like so:
+Images are tagged every so often to denote a stable, production quality release.
+A specific tagged image can be pulled like so:
 
 ```shell
 $ docker pull idinteraction/<image>:<tag>
@@ -39,18 +40,19 @@ directions and the TV they are watching in one frame. This pipeline takes a set
 of raw experiment videos and splits them into separate streams for the front,
 side and back view of each participant.
 
-The directory holding the raw video streams and the directory to which the processed video streams will be saved must be specified when running the docker image. It is advisable to mount the input directory as 'read-only'.
+The directory holding the raw video streams and the directory to which the
+processed video streams will be saved must be specified when running the docker
+image. It is advisable to mount the input directory as 'read-only'.
 
 The following command will run the video processing pipeline on any videos it
 finds in the input directory (edit the parts in `<angle brackets>` to suit your
 set up):
 
 ```shell
-$ docker run -it --name=<name> \
+$ docker run -it --rm --name=<name> \
  -v <input-directory>:/opt/idinteraction/video/in:ro \
  -v <output-directory>:/opt/idinteraction/video/out \
- idinteraction/video \
- make
+ idinteraction/video
 ```
 
 [1]: https://www.docker.com/

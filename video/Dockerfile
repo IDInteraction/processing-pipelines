@@ -4,14 +4,22 @@
 # Robert Haines, University of Manchester.
 #
 
-FROM idinteraction/base
+FROM idinteraction/base:1.2
 
 MAINTAINER Robert Haines <robert.haines@manchester.ac.uk>
 
-RUN apt-get install -y mencoder && \
-    apt-get clean
+RUN apt-get update -q && \
+    DEBIAN_FRONTEND=noninteractive \
+    apt-get install -qy \
+    mencoder \
+    --no-install-recommends && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 ENV IDI_VIDEO_HOME $IDI_HOME/video
 RUN mkdir $IDI_VIDEO_HOME
 COPY resources/ $IDI_VIDEO_HOME
 WORKDIR $IDI_VIDEO_HOME
+
+ENTRYPOINT ["/usr/bin/make"]
+CMD ["all"]
