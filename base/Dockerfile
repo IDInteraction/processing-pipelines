@@ -8,8 +8,9 @@ FROM ubuntu:14.04
 
 MAINTAINER Robert Haines <robert.haines@manchester.ac.uk>
 
-RUN apt-get update && \
-    apt-get install -y \
+RUN apt-get update -q && \
+    DEBIAN_FRONTEND=noninteractive \
+    apt-get install -qy \
     make \
     --no-install-recommends && \
     apt-get clean && \
