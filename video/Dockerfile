@@ -8,7 +8,8 @@ FROM idinteraction/base:1.2
 
 MAINTAINER Robert Haines <robert.haines@manchester.ac.uk>
 
-RUN apt-get install -y mencoder && \
+RUN DEBIAN_FRONTEND=noninteractive \
+    apt-get install -qy mencoder && \
     apt-get clean
 
 ENV IDI_VIDEO_HOME $IDI_HOME/video
