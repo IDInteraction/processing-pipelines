@@ -8,7 +8,8 @@ FROM idinteraction/base:1.2
 
 MAINTAINER Robert Haines <robert.haines@manchester.ac.uk>
 
-RUN DEBIAN_FRONTEND=noninteractive \
+RUN apt-get update -q && \
+    DEBIAN_FRONTEND=noninteractive \
     apt-get install -qy \
     mencoder \
     --no-install-recommends && \
