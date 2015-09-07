@@ -9,8 +9,11 @@ FROM idinteraction/base:1.2
 MAINTAINER Robert Haines <robert.haines@manchester.ac.uk>
 
 RUN DEBIAN_FRONTEND=noninteractive \
-    apt-get install -qy mencoder && \
-    apt-get clean
+    apt-get install -qy \
+    mencoder \
+    --no-install-recommends && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 ENV IDI_VIDEO_HOME $IDI_HOME/video
 RUN mkdir $IDI_VIDEO_HOME
