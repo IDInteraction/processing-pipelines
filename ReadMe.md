@@ -49,7 +49,7 @@ finds in the input directory (edit the parts in `<angle brackets>` to suit your
 set up):
 
 ```shell
-$ docker run -it --name=<name> \
+$ docker run -it --rm --name=<name> \
  -v <input-directory>:/opt/idinteraction/video/in:ro \
  -v <output-directory>:/opt/idinteraction/video/out \
  idinteraction/video
