@@ -8,6 +8,12 @@ FROM idinteraction/base:1.2
 
 MAINTAINER Robert Haines <robert.haines@manchester.ac.uk>
 
-RUN apt-get install -y libcv2.4 && apt-get clean
+RUN apt-get update -q && \
+    DEBIAN_FRONTEND=noninteractive \
+    apt-get install -qy \
+    libcv2.4 \
+    --no-install-recommends && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY CppMT/cmt $IDI_HOME/cmt
