@@ -18,3 +18,4 @@ RUN apt-get update -q && \
 
 ENV IDI_HOME /idinteraction
 RUN mkdir $IDI_HOME
+WORKDIR $IDI_HOME
