@@ -8,6 +8,14 @@ behavioural coding.*
 The only software needed to run these pipelines is [Docker][1]. Please see the
 [installation instructions for your platform][2] to get started.
 
+To build these pipelines you will also need:
+* make
+* CMake
+* OpenCV 2.4
+
+You should use the pre-built docker images, described below, if you possibly
+can.
+
 ## Getting the Docker images
 
 All of our Docker images are available from the [Docker Hub][3].
