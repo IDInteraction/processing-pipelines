@@ -16,5 +16,5 @@ RUN apt-get update -q && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-ENV IDI_HOME /opt/idinteraction
+ENV IDI_HOME /idinteraction
 RUN mkdir $IDI_HOME
