@@ -4,7 +4,7 @@
 # Robert Haines, University of Manchester.
 #
 
-FROM idinteraction/base:1.2
+FROM idinteraction/base:2.0
 
 MAINTAINER Robert Haines <robert.haines@manchester.ac.uk>
 
