@@ -1,5 +1,5 @@
 #
-# Object tracking image for the IDInteraction processing pipelines.
+# CppMT base image for the IDInteraction processing pipelines.
 #
 # Robert Haines, University of Manchester.
 #
