@@ -63,6 +63,18 @@ $ docker run -it --rm --name=<name> \
  idinteraction/video
 ```
 
+### Object tracking initialization
+
+*Collect metadata about the video streams to be processed.*
+
+```shell
+$ docker run -it --rm --name=<name> \
+ -v <video-directory>:/idinteraction/videos \
+ -v /tmp/.X11-unix:/tmp/.X11-unix \
+ -e DISPLAY=unix$DISPLAY \
+ idinteraction/init-tracking
+```
+
 [1]: https://www.docker.com/
 [2]: https://docs.docker.com/
 [3]: https://hub.docker.com/u/idinteraction/
