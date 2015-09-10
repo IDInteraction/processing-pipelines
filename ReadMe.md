@@ -65,5 +65,5 @@ $ docker run -it --rm --name=<name> \
 
 [1]: https://www.docker.com/
 [2]: https://docs.docker.com/
-[3]: https://registry.hub.docker.com/repos/idinteraction/
-[4]: https://registry.hub.docker.com/u/idinteraction/video/
+[3]: https://hub.docker.com/u/idinteraction/
+[4]: https://hub.docker.com/r/idinteraction/video/
