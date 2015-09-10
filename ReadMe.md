@@ -58,8 +58,8 @@ set up):
 
 ```shell
 $ docker run -it --rm --name=<name> \
- -v <input-directory>:/opt/idinteraction/video/in:ro \
- -v <output-directory>:/opt/idinteraction/video/out \
+ -v <input-directory>:/idinteraction/in:ro \
+ -v <output-directory>:/idinteraction/out \
  idinteraction/video
 ```
 
