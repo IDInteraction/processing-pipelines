@@ -13,6 +13,7 @@ cppmt=./cmt
 video-dir=videos
 
 .PHONY: all
+.PRECIOUS: $(video-dir)/%.skip
 
 all: $(patsubst $(video-dir)/%.mp4,$(video-dir)/%.bbox,$(wildcard $(video-dir)/*.mp4))
 
