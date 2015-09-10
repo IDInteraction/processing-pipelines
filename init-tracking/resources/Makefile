@@ -12,7 +12,7 @@
 cppmt=./cmt
 video-dir=videos
 
-.PHONY: all
+.PHONY: all clean
 .PRECIOUS: $(video-dir)/%.skip
 
 all: $(patsubst $(video-dir)/%.mp4,$(video-dir)/%.bbox,$(wildcard $(video-dir)/*.mp4))
@@ -23,3 +23,7 @@ $(video-dir)/%.skip: $(video-dir)/%.mp4
 
 $(video-dir)/%.bbox: $(video-dir)/%.mp4 $(video-dir)/%.skip
 	$(cppmt) --skip-ms=`cat $(word 2, $^)` --process-frames=1 $< | head -1 | cut -d" " -f5 | tr -d '\n' > $@
+
+clean:
+	rm -f $(video-dir)/*.skip
+	rm -f $(video-dir)/*.bbox
