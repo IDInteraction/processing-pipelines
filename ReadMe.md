@@ -63,16 +63,37 @@ $ docker run -it --rm --name=<name> \
  idinteraction/video
 ```
 
-### Object tracking initialization
+### Object tracking
 
-*Collect metadata about the video streams to be processed.*
+*Collect metadata about the video streams to be processed and then perform
+object tracking.*
+
+To configure video starting position and object bounding boxes, use:
 
 ```shell
 $ docker run -it --rm --name=<name> \
  -v <video-directory>:/idinteraction/videos \
  -v /tmp/.X11-unix:/tmp/.X11-unix \
  -e DISPLAY=unix$DISPLAY \
- idinteraction/init-tracking
+ idinteraction/object-tracking init
+```
+
+To perform object tracking only, use:
+
+```shell
+$ docker run -it --rm --name=<name> \
+ -v <video-directory>:/idinteraction/videos \
+ idinteraction/object-tracking track
+```
+
+To perform both steps in one go:
+
+```shell
+$ docker run -it --rm --name=<name> \
+ -v <video-directory>:/idinteraction/videos \
+ -v /tmp/.X11-unix:/tmp/.X11-unix \
+ -e DISPLAY=unix$DISPLAY \
+ idinteraction/object-tracking
 ```
 
 [1]: https://www.docker.com/

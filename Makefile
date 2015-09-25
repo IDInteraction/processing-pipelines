@@ -12,9 +12,9 @@ else
 	docker = sudo docker
 endif
 
-.PHONY: all base cppmt init init-tracking video clean really-clean
+.PHONY: all base cppmt tracking object-tracking video clean really-clean
 
-all: .base .cppmt .init .video
+all: .base .cppmt .tracking .video
 
 # Use empty targets to help make, but hide them as dotfiles.
 base: .base
@@ -28,11 +28,11 @@ cppmt: .cppmt
 	$(docker) build -t idinteraction/cppmt cppmt/
 	touch .cppmt
 
-init: .init
-init-tracking: .init
-.init: init-tracking/Dockerfile init-tracking/resources/Makefile
-	$(docker) build -t idinteraction/init-tracking init-tracking/
-	touch .init
+tracking: .tracking
+object-tracking: .tracking
+.tracking: object-tracking/Dockerfile object-tracking/resources/Makefile
+	$(docker) build -t idinteraction/object-tracking object-tracking/
+	touch .tracking
 
 video: .video
 .video: .base video/Dockerfile video/resources/Makefile
@@ -42,11 +42,11 @@ video: .video
 upload: all
 	$(docker) push idinteraction/base
 	$(docker) push idinteraction/cppmt
-	$(docker) push idinteraction/init-tracking
+	$(docker) push idinteraction/object-tracking
 	$(docker) push idinteraction/video
 
 clean:
-	rm -f .base .cppmt .init .video
+	rm -f .base .cppmt .tracking .video
 	$(MAKE) -C cppmt clean
 	-$(docker) stop `$(docker) ps -aq`
 	-$(docker) rm -fv `$(docker) ps -aq`
@@ -55,5 +55,5 @@ clean:
 really-clean: clean
 	-$(docker) rmi idinteraction/base
 	-$(docker) rmi idinteraction/cppmt
-	-$(docker) rmi idinteraction/init-tracking
+	-$(docker) rmi idinteraction/object-tracking
 	-$(docker) rmi idinteraction/video
