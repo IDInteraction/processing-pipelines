@@ -20,11 +20,11 @@ can.
 
 All of our Docker images are available from the [Docker Hub][3].
 
-* To get the latest version of the [video processing image][4] run:
+To get the latest version of the [video processing image][4] run:
 
-  ```shell
-  $ docker pull idinteraction/video
-  ```
+```shell
+$ docker pull idinteraction/video
+```
 
 Images are tagged every so often to denote a stable, production quality release.
 A specific tagged image can be pulled like so:
