@@ -4,7 +4,7 @@
 
 ## Prerequisites
 
-The only software needed to run these pipelines is [Docker][1]. Please see the [installation instructions for your platform][2] to get started.
+The only software needed to run these pipelines is [Docker][docker]. Please see the [installation instructions for your platform][dockerdocs] to get started.
 
 To build these pipelines you will also need:
 * make
@@ -15,9 +15,9 @@ You should use the pre-built docker images, described below, if you possibly can
 
 ## Getting the Docker images
 
-All of our Docker images are available from the [Docker Hub][3].
+All of our Docker images are available from the [Docker Hub][dockerhub].
 
-To get the latest version of the [video processing image][4] run:
+To get the latest version of the [video processing image][videoimage] run:
 
 ```shell
 $ docker pull idinteraction/video
@@ -82,7 +82,7 @@ $ docker run -it --rm --name=<name> \
  idinteraction/object-tracking
 ```
 
-[1]: https://www.docker.com/
-[2]: https://docs.docker.com/
-[3]: https://hub.docker.com/u/idinteraction/
-[4]: https://hub.docker.com/r/idinteraction/video/
+[docker]: https://www.docker.com/
+[dockerdocs]: https://docs.docker.com/
+[dockerhub]: https://hub.docker.com/u/idinteraction/
+[videoimage]: https://hub.docker.com/r/idinteraction/video/
