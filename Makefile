@@ -1,8 +1,14 @@
+#------------------------------------------------------------------------------
+# Copyright (c) 2015 The University of Manchester, UK.
 #
-# Build docker images for IDInteraction processing pipelines.
+# Licenced under LGPL version 2.1. See LICENCE for details.
 #
-# Robert Haines, University of Manchester.
+# The IDInteraction Processing Pipelines were developed in the IDInteraction
+# project, funded by the Engineering and Physical Sciences Research Council,
+# UK through grant agreement number EP/M017133/1.
 #
+# Author: Robert Haines
+#------------------------------------------------------------------------------
 
 # Docker usually needs to run as root, so make sure we do.
 root := $(shell id -u)
