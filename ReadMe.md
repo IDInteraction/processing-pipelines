@@ -82,7 +82,12 @@ $ docker run -it --rm --name=<name> \
  idinteraction/object-tracking
 ```
 
+## Acknowledgements
+
+The IDInteraction Processing Pipelines were developed in the IDInteraction project, funded by the Engineering and Physical Sciences Research Council, UK through grant agreement number [EP/M017133/1][gow].
+
 [docker]: https://www.docker.com/
 [dockerdocs]: https://docs.docker.com/
 [dockerhub]: https://hub.docker.com/u/idinteraction/
 [videoimage]: https://hub.docker.com/r/idinteraction/video/
+[gow]: http://gow.epsrc.ac.uk/NGBOViewGrant.aspx?GrantRef=EP/M017133/1
