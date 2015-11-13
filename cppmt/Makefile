@@ -10,12 +10,20 @@
 # Author: Robert Haines
 #------------------------------------------------------------------------------
 
-.PHONY: clean
+.PHONY: all clean
+
+all: CppMT/cmt CppMT-replay/cmt-replay
 
 CppMT/cmt:
 	git clone -b idi-merged https://github.com/IDInteraction/CppMT.git
 	cd CppMT && cmake .
 	$(MAKE) -C CppMT
 
+CppMT-replay/cmt-replay:
+	git clone -b master https://github.com/IDInteraction/CppMT-replay.git
+	cd CppMT-replay && cmake .
+	$(MAKE) -C CppMT-replay
+
 clean:
 	rm -rf CppMT
+	rm -rf CppMT-replay
