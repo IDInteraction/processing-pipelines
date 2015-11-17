@@ -10,7 +10,7 @@
 # Author: Robert Haines
 #------------------------------------------------------------------------------
 
-FROM idinteraction/cppmt:1.0
+FROM idinteraction/cppmt:1.1
 
 MAINTAINER Robert Haines <robert.haines@manchester.ac.uk>
 
