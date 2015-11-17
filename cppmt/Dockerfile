@@ -23,4 +23,4 @@ RUN apt-get update -q && \
     rm -rf /var/lib/apt/lists/*
 
 COPY build/CppMT/cmt $IDI_HOME/cmt
-COPY CppMT-replay/cmt-replay $IDI_HOME/cmt-replay
+COPY build/CppMT-replay/cmt-replay $IDI_HOME/cmt-replay

@@ -11,20 +11,21 @@
 #------------------------------------------------------------------------------
 
 CMT_DIR=build/CppMT
+CMT_R_DIR=build/CppMT-replay
 
 .PHONY: all clean
 
-all: $(CMT_DIR)/cmt CppMT-replay/cmt-replay
+all: $(CMT_DIR)/cmt $(CMT_R_DIR)/cmt-replay
 
 $(CMT_DIR)/cmt:
 	mkdir -p $(CMT_DIR)
 	cd $(CMT_DIR) && cmake ../../CppMT
 	$(MAKE) -C $(CMT_DIR)
 
-CppMT-replay/cmt-replay:
-	git clone -b master https://github.com/IDInteraction/CppMT-replay.git
-	cd CppMT-replay && cmake .
-	$(MAKE) -C CppMT-replay
+$(CMT_R_DIR)/cmt-replay:
+	mkdir -p $(CMT_R_DIR)
+	cd $(CMT_R_DIR) && cmake ../../CppMT-replay
+	$(MAKE) -C $(CMT_R_DIR)
 
 clean:
-	rm -rf CppMT-replay
+	rm -rf build

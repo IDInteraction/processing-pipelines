@@ -2,3 +2,6 @@
 	path = cppmt/CppMT
 	url = git@github.com:IDInteraction/CppMT.git
 	branch = idi-merged
+[submodule "cppmt/CppMT-replay"]
+	path = cppmt/CppMT-replay
+	url = git@github.com:IDInteraction/CppMT-replay.git
