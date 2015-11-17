@@ -15,7 +15,6 @@
 all: CppMT/cmt CppMT-replay/cmt-replay
 
 CppMT/cmt:
-	git clone -b idi-merged https://github.com/IDInteraction/CppMT.git
 	cd CppMT && cmake .
 	$(MAKE) -C CppMT
 
@@ -25,5 +24,4 @@ CppMT-replay/cmt-replay:
 	$(MAKE) -C CppMT-replay
 
 clean:
-	rm -rf CppMT
 	rm -rf CppMT-replay

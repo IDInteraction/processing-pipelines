@@ -1,0 +1,4 @@
+[submodule "cppmt/CppMT"]
+	path = cppmt/CppMT
+	url = git@github.com:IDInteraction/CppMT.git
+	branch = idi-merged
