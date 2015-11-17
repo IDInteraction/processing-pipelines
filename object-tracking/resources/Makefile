@@ -21,16 +21,21 @@
 # "make track" will perform object tracking on a set of input files, collecting
 # set up information if required.
 #
+# "make replay" will draw the tracked bounding box into a new copy of the
+# video, performing the object tracking step beforehand if necessary.
+#
 
 cppmt=./cmt
+cppmt-r=./cmt-replay
 video-dir=videos
 
-.PHONY: all init track clean
-.PRECIOUS: $(video-dir)/%.skip $(video-dir)/%.bbox
+.PHONY: all init track replay clean
+.PRECIOUS: $(video-dir)/%.skip $(video-dir)/%.bbox $(video-dir)/%.csv
 
-all: init track
+all: init track replay
 init: $(patsubst $(video-dir)/%.mp4,$(video-dir)/%.bbox,$(wildcard $(video-dir)/*.mp4))
 track: init $(patsubst $(video-dir)/%.mp4,$(video-dir)/%.csv,$(wildcard $(video-dir)/*.mp4))
+replay: track $(patsubst $(video-dir)/%.mp4,$(video-dir)/%_out.avi,$(wildcard $(video-dir)/*.mp4))
 
 $(video-dir)/%.skip: $(video-dir)/%.mp4
 	@read -p "At what time (in milliseconds) does the experiment start in file '$<'? " tskip; \
@@ -42,7 +47,11 @@ $(video-dir)/%.bbox: $(video-dir)/%.mp4 $(video-dir)/%.skip
 $(video-dir)/%.csv: $(video-dir)/%.mp4 $(video-dir)/%.skip $(video-dir)/%.bbox
 	$(cppmt) --skip-ms=`cat $(word 2, $^)` --bbox=`cat $(word 3, $^)` --with-rotation --quiet --output-file=$@ $<
 
+$(video-dir)/%_out.avi: $(video-dir)/%.csv $(video-dir)/%.mp4
+	$(cppmt-r) $(word 2, $^) $<
+
 clean:
 	rm -f $(video-dir)/*.skip
 	rm -f $(video-dir)/*.bbox
 	rm -f $(video-dir)/*.csv
+	rm -f $(video-dir)/*_out.avi
