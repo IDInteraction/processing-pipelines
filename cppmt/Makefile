@@ -10,13 +10,16 @@
 # Author: Robert Haines
 #------------------------------------------------------------------------------
 
+CMT_DIR=build/CppMT
+
 .PHONY: all clean
 
-all: CppMT/cmt CppMT-replay/cmt-replay
+all: $(CMT_DIR)/cmt CppMT-replay/cmt-replay
 
-CppMT/cmt:
-	cd CppMT && cmake .
-	$(MAKE) -C CppMT
+$(CMT_DIR)/cmt:
+	mkdir -p $(CMT_DIR)
+	cd $(CMT_DIR) && cmake ../../CppMT
+	$(MAKE) -C $(CMT_DIR)
 
 CppMT-replay/cmt-replay:
 	git clone -b master https://github.com/IDInteraction/CppMT-replay.git

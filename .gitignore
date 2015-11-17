@@ -4,4 +4,5 @@
 .cppmt
 .tracking
 .video
+cppmt/build/
 cppmt/CppMT-replay/
