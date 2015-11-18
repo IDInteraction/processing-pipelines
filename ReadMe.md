@@ -72,7 +72,16 @@ $ docker run -it --rm --name=<name> \
  idinteraction/object-tracking track
 ```
 
-To perform both steps in one go:
+To create videos with the object tracking bounding boxes drawn in them, to help
+with validating the object tracking process, use:
+
+```shell
+$ docker run -it --rm --name=<name> \
+ -v <video-directory>:/idinteraction/videos \
+ idinteraction/object-tracking replay
+```
+
+To perform all steps in one go:
 
 ```shell
 $ docker run -it --rm --name=<name> \
