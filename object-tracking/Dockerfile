@@ -14,7 +14,7 @@ FROM idinteraction/cppmt:1.1
 
 MAINTAINER Robert Haines <robert.haines@manchester.ac.uk>
 
-COPY resources/ $IDI_TRACKING_HOME
+COPY resources/ $IDI_HOME
 
 ENTRYPOINT ["/usr/bin/make"]
 CMD ["all"]
