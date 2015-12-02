@@ -27,31 +27,31 @@
 
 cppmt=./cmt
 cppmt-r=./cmt-replay
-video-dir=videos
+in-dir=videos
 
 .PHONY: all init track replay clean
-.PRECIOUS: $(video-dir)/%.skip $(video-dir)/%.bbox $(video-dir)/%.csv
+.PRECIOUS: $(in-dir)/%.skip $(in-dir)/%.bbox $(in-dir)/%.csv
 
 all: init track replay
-init: $(patsubst $(video-dir)/%.mp4,$(video-dir)/%.bbox,$(wildcard $(video-dir)/*.mp4))
-track: init $(patsubst $(video-dir)/%.mp4,$(video-dir)/%.csv,$(wildcard $(video-dir)/*.mp4))
-replay: track $(patsubst $(video-dir)/%.mp4,$(video-dir)/%_out.avi,$(wildcard $(video-dir)/*.mp4))
+init: $(patsubst $(in-dir)/%.mp4,$(in-dir)/%.bbox,$(wildcard $(in-dir)/*.mp4))
+track: init $(patsubst $(in-dir)/%.mp4,$(in-dir)/%.csv,$(wildcard $(in-dir)/*.mp4))
+replay: track $(patsubst $(in-dir)/%.mp4,$(in-dir)/%_out.avi,$(wildcard $(in-dir)/*.mp4))
 
-$(video-dir)/%.skip: $(video-dir)/%.mp4
+$(in-dir)/%.skip: $(in-dir)/%.mp4
 	@read -p "At what time (in milliseconds) does the experiment start in file '$<'? " tskip; \
 	echo -n $$tskip > $@
 
-$(video-dir)/%.bbox: $(video-dir)/%.mp4 $(video-dir)/%.skip
+$(in-dir)/%.bbox: $(in-dir)/%.mp4 $(in-dir)/%.skip
 	$(cppmt) --skip-ms=`cat $(word 2, $^)` --process-frames=1 $< | head -1 | cut -d" " -f5 | tr -d '\n' > $@
 
-$(video-dir)/%.csv: $(video-dir)/%.mp4 $(video-dir)/%.skip $(video-dir)/%.bbox
+$(in-dir)/%.csv: $(in-dir)/%.mp4 $(in-dir)/%.skip $(in-dir)/%.bbox
 	$(cppmt) --skip-ms=`cat $(word 2, $^)` --bbox=`cat $(word 3, $^)` --with-rotation --quiet --output-file=$@ $<
 
-$(video-dir)/%_out.avi: $(video-dir)/%.csv $(video-dir)/%.mp4
+$(in-dir)/%_out.avi: $(in-dir)/%.csv $(in-dir)/%.mp4
 	$(cppmt-r) $(word 2, $^) $<
 
 clean:
-	rm -f $(video-dir)/*.skip
-	rm -f $(video-dir)/*.bbox
-	rm -f $(video-dir)/*.csv
-	rm -f $(video-dir)/*_out.avi
+	rm -f $(in-dir)/*.skip
+	rm -f $(in-dir)/*.bbox
+	rm -f $(in-dir)/*.csv
+	rm -f $(in-dir)/*_out.avi
