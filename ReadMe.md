@@ -58,7 +58,8 @@ To configure video starting position and object bounding boxes, use:
 
 ```shell
 $ docker run -it --rm --name=<name> \
- -v <video-directory>:/idinteraction/videos \
+ -v <videos-directory>:/idinteraction/videos:ro \
+ -v <output-directory>:/idinteraction/output \
  -v /tmp/.X11-unix:/tmp/.X11-unix \
  -e DISPLAY=unix$DISPLAY \
  idinteraction/object-tracking init
@@ -68,7 +69,8 @@ To perform object tracking only, use:
 
 ```shell
 $ docker run -it --rm --name=<name> \
- -v <video-directory>:/idinteraction/videos \
+ -v <videos-directory>:/idinteraction/videos:ro \
+ -v <output-directory>:/idinteraction/output \
  idinteraction/object-tracking track
 ```
 
@@ -76,7 +78,8 @@ To create videos with the object tracking bounding boxes drawn in them, to help 
 
 ```shell
 $ docker run -it --rm --name=<name> \
- -v <video-directory>:/idinteraction/videos \
+ -v <videos-directory>:/idinteraction/videos:ro \
+ -v <output-directory>:/idinteraction/output \
  idinteraction/object-tracking replay
 ```
 
@@ -84,7 +87,8 @@ To perform all steps in one go:
 
 ```shell
 $ docker run -it --rm --name=<name> \
- -v <video-directory>:/idinteraction/videos \
+ -v <videos-directory>:/idinteraction/videos:ro \
+ -v <output-directory>:/idinteraction/output \
  -v /tmp/.X11-unix:/tmp/.X11-unix \
  -e DISPLAY=unix$DISPLAY \
  idinteraction/object-tracking
