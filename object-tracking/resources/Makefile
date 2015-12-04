@@ -49,7 +49,7 @@ $(out-dir)/%.csv: $(in-dir)/%.mp4 $(out-dir)/%.skip $(out-dir)/%.bbox
 	$(cppmt) --skip-ms=`cat $(word 2, $^)` --bbox=`cat $(word 3, $^)` --with-rotation --quiet --output-file=$@ $<
 
 $(out-dir)/%_out.avi: $(out-dir)/%.csv $(in-dir)/%.mp4
-	$(cppmt-r) $(word 2, $^) $<
+	$(cppmt-r) $(word 2, $^) $< $(out-dir)
 
 clean:
 	rm -f $(out-dir)/*.skip
