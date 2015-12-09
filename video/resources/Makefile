@@ -22,6 +22,9 @@ front-dir=$(out-dir)/front
 side-dir=$(out-dir)/side
 back-dir=$(out-dir)/back
 
+pass1-opts=-x264encopts pass=1:turbo:bframes=3:b_pyramid=normal:bitrate=900:me=umh:partitions=all:trellis=1:qp_step=4:qcomp=0.7:direct_pred=auto
+pass2-opts=-x264encopts pass=2:subq=6:frameref=5:bframes=3:b_pyramid=normal:bitrate=900:me=umh:partitions=all:trellis=1:qp_step=4:qcomp=0.7:direct_pred=auto
+
 .PHONY: all all-front all-side all-back
 
 all: all-front all-side all-back
@@ -40,15 +43,18 @@ $(back-dir):
 
 $(front-dir)/%.mp4: $(in-dir)/%.mov | $(front-dir)
 	rm -f $@.tmp
-	mencoder $< -vf crop=640:360:640:0 -really-quiet -nosound -ovc x264 -o $@.tmp
+	mencoder $< -ovc x264 $(pass1-opts) -vf crop=640:360:640:0 -really-quiet -nosound -o /dev/null
+	mencoder $< -ovc x264 $(pass2-opts) -vf crop=640:360:640:0 -really-quiet -nosound -o $@.tmp
 	mv $@.tmp $@
 
 $(side-dir)/%.mp4: $(in-dir)/%.mov | $(side-dir)
 	rm -f $@.tmp
-	mencoder $< -vf crop=640:360:0:0 -really-quiet -nosound -ovc x264 -o $@.tmp
+	mencoder $< -ovc x264 $(pass1-opts) -vf crop=640:360:0:0 -really-quiet -nosound -o /dev/null
+	mencoder $< -ovc x264 $(pass2-opts) -vf crop=640:360:0:0 -really-quiet -nosound -o $@.tmp
 	mv $@.tmp $@
 
 $(back-dir)/%.mp4: $(in-dir)/%.mov | $(back-dir)
 	rm -f $@.tmp
-	mencoder $< -vf crop=640:360:640:360 -really-quiet -nosound -ovc x264 -o $@.tmp
+	mencoder $< -ovc x264 $(pass1-opts) -vf crop=640:360:640:360 -really-quiet -nosound -o /dev/null
+	mencoder $< -ovc x264 $(pass2-opts) -vf crop=640:360:640:360 -really-quiet -nosound -o $@.tmp
 	mv $@.tmp $@
