@@ -43,18 +43,18 @@ $(back-dir):
 
 $(front-dir)/%.mp4: $(in-dir)/%.mov | $(front-dir)
 	rm -f $@.tmp
-	mencoder $< -ovc x264 $(pass1-opts) -vf crop=640:360:640:0 -really-quiet -nosound -o /dev/null
-	mencoder $< -ovc x264 $(pass2-opts) -vf crop=640:360:640:0 -really-quiet -nosound -o $@.tmp
+	mencoder $< -ovc x264 -passlogfile $@.pass.log $(pass1-opts) -vf crop=640:360:640:0 -really-quiet -nosound -o /dev/null
+	mencoder $< -ovc x264 -passlogfile $@.pass.log $(pass2-opts) -vf crop=640:360:640:0 -really-quiet -nosound -o $@.tmp
 	mv $@.tmp $@
 
 $(side-dir)/%.mp4: $(in-dir)/%.mov | $(side-dir)
 	rm -f $@.tmp
-	mencoder $< -ovc x264 $(pass1-opts) -vf crop=640:360:0:0 -really-quiet -nosound -o /dev/null
-	mencoder $< -ovc x264 $(pass2-opts) -vf crop=640:360:0:0 -really-quiet -nosound -o $@.tmp
+	mencoder $< -ovc x264 -passlogfile $@.pass.log $(pass1-opts) -vf crop=640:360:0:0 -really-quiet -nosound -o /dev/null
+	mencoder $< -ovc x264 -passlogfile $@.pass.log $(pass2-opts) -vf crop=640:360:0:0 -really-quiet -nosound -o $@.tmp
 	mv $@.tmp $@
 
 $(back-dir)/%.mp4: $(in-dir)/%.mov | $(back-dir)
 	rm -f $@.tmp
-	mencoder $< -ovc x264 $(pass1-opts) -vf crop=640:360:640:360 -really-quiet -nosound -o /dev/null
-	mencoder $< -ovc x264 $(pass2-opts) -vf crop=640:360:640:360 -really-quiet -nosound -o $@.tmp
+	mencoder $< -ovc x264 -passlogfile $@.pass.log $(pass1-opts) -vf crop=640:360:640:360 -really-quiet -nosound -o /dev/null
+	mencoder $< -ovc x264 -passlogfile $@.pass.log $(pass2-opts) -vf crop=640:360:640:360 -really-quiet -nosound -o $@.tmp
 	mv $@.tmp $@
