@@ -22,8 +22,8 @@ front-dir=$(out-dir)/front
 side-dir=$(out-dir)/side
 back-dir=$(out-dir)/back
 
-pass1-opts=-x264encopts pass=1:turbo:bframes=3:b_pyramid=normal:bitrate=900:me=umh:partitions=all:trellis=1:qp_step=4:qcomp=0.7:direct_pred=auto
-pass2-opts=-x264encopts pass=2:subq=6:frameref=5:bframes=3:b_pyramid=normal:bitrate=900:me=umh:partitions=all:trellis=1:qp_step=4:qcomp=0.7:direct_pred=auto
+pass1-opts=-x264encopts pass=1:turbo:bframes=3:b_pyramid=normal:bitrate=900:me=umh:partitions=all:qp_step=4:qcomp=0.7:direct_pred=auto
+pass2-opts=-x264encopts pass=2:subq=7:frameref=6:bframes=3:b_pyramid=normal:bitrate=900:me=umh:partitions=all:8x8dct:trellis=2:qp_step=4:qcomp=0.7:direct_pred=auto
 
 .PHONY: all all-front all-side all-back
 
