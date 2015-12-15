@@ -107,5 +107,5 @@ Licenced under LGPL version 2.1. See LICENCE for details.
 [docker]: https://www.docker.com/
 [dockerdocs]: https://docs.docker.com/
 [dockerhub]: https://hub.docker.com/u/idinteraction/
-[videoimage]: https://hub.docker.com/r/idinteraction/video/
 [gow]: http://gow.epsrc.ac.uk/NGBOViewGrant.aspx?GrantRef=EP/M017133/1
+[videoimage]: https://hub.docker.com/r/idinteraction/video/
