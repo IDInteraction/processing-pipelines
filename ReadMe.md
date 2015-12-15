@@ -31,7 +31,9 @@ $ docker pull idinteraction/<image>:<tag>
 
 ## Running the pipelines
 
-This will depend on which platform you are using. For now the instructions below are for Linux.
+The easiest way of running these pipelines is to use the [tracking tools scripts][tools]. These scripts wrap the complexities of the individual pipelines into simple command-line tools.
+
+Instructions for running the docker images directly, in Linux, are below. There may be platform specific differences that are not taken into account.
 
 ### Video processing
 
@@ -108,4 +110,5 @@ Licenced under LGPL version 2.1. See LICENCE for details.
 [dockerdocs]: https://docs.docker.com/
 [dockerhub]: https://hub.docker.com/u/idinteraction/
 [gow]: http://gow.epsrc.ac.uk/NGBOViewGrant.aspx?GrantRef=EP/M017133/1
+[tools]: https://github.com/IDInteraction/processing-pipelines
 [videoimage]: https://hub.docker.com/r/idinteraction/video/
