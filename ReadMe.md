@@ -110,5 +110,5 @@ Licenced under LGPL version 2.1. See LICENCE for details.
 [dockerdocs]: https://docs.docker.com/
 [dockerhub]: https://hub.docker.com/u/idinteraction/
 [gow]: http://gow.epsrc.ac.uk/NGBOViewGrant.aspx?GrantRef=EP/M017133/1
-[tools]: https://github.com/IDInteraction/processing-pipelines
+[tools]: https://github.com/IDInteraction/tracking-tools
 [videoimage]: https://hub.docker.com/r/idinteraction/video/
