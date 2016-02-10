@@ -1,5 +1,5 @@
 #------------------------------------------------------------------------------
-# Copyright (c) 2015 The University of Manchester, UK.
+# Copyright (c) 2015, 2016 The University of Manchester, UK.
 #
 # Licenced under LGPL version 2.1. See LICENCE for details.
 #
@@ -10,11 +10,16 @@
 # Author: Robert Haines
 #------------------------------------------------------------------------------
 
-.PHONY: all base cppmt tracking object-tracking video clean really-clean
+.PHONY: all analysis base cppmt tracking object-tracking video clean really-clean
 
-all: .base .cppmt .tracking .video
+all: .analysis .base .cppmt .tracking .video
 
 # Use empty targets to help make, but hide them as dotfiles.
+analysis: .analysis
+.analysis: analysis/Dockerfile
+	docker build -t idinteraction/analysis analysis/
+	touch .analysis
+
 base: .base
 .base: base/Dockerfile
 	docker build -t idinteraction/base base/
@@ -38,19 +43,21 @@ video: .video
 	touch .video
 
 upload: all
+	docker push idinteraction/analysis
 	docker push idinteraction/base
 	docker push idinteraction/cppmt
 	docker push idinteraction/object-tracking
 	docker push idinteraction/video
 
 clean:
-	rm -f .base .cppmt .tracking .video
+	rm -f .analysis .base .cppmt .tracking .video
 	$(MAKE) -C cppmt clean
 	-docker stop `docker ps -aq`
 	-docker rm -fv `docker ps -aq`
 	-docker images -q --filter "dangling=true" | xargs docker rmi
 
 really-clean: clean
+	-docker rmi idinteraction/analysis
 	-docker rmi idinteraction/base
 	-docker rmi idinteraction/cppmt
 	-docker rmi idinteraction/object-tracking
