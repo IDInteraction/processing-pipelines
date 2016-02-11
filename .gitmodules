@@ -8,3 +8,4 @@
 [submodule "analysis/tracking-analysis"]
 	path = analysis/tracking-analysis
 	url = https://github.com/IDInteraction/tracking-analysis.git
+	branch = docker
