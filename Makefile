@@ -16,7 +16,7 @@ all: .analysis .base .cppmt .tracking .video
 
 # Use empty targets to help make, but hide them as dotfiles.
 analysis: .analysis
-.analysis: analysis/Dockerfile
+.analysis: analysis/Dockerfile analysis/resources/install.R
 	docker build -t idinteraction/analysis analysis/
 	touch .analysis
 
