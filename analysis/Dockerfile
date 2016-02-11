@@ -22,7 +22,8 @@ RUN Rscript install.R && \
     mkdir -p /home/docker/data/attention && \
     mkdir -p /home/docker/data/tracking && \
     mkdir -p /home/docker/data/output && \
-    chown -R docker /home/docker/data && \
+    chown -R docker:docker /home/docker/* && \
     rm -f install.R Rplots.pdf
 
+USER docker
 CMD ["bash"]
