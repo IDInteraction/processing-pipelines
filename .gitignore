@@ -1,5 +1,6 @@
 *~
 *.bak
+.analysis
 .base
 .cppmt
 .tracking
