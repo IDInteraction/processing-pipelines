@@ -18,6 +18,14 @@ COPY tracking-analysis/dataProcessing.R /home/docker
 COPY resources/ /home/docker
 WORKDIR /home/docker
 
+RUN apt-get update -q && \
+    DEBIAN_FRONTEND=noninteractive \
+    apt-get install -qy \
+    pandoc \
+    --no-install-recommends && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 RUN Rscript install.R && \
     mkdir -p /home/docker/data/attention && \
     mkdir -p /home/docker/data/tracking && \

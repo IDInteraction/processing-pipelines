@@ -12,3 +12,4 @@
 
 source("dataProcessing.R")
 installMissingPackages()
+install.packages("rmarkdown")
