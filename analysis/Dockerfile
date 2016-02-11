@@ -19,6 +19,9 @@ COPY resources/ /home/docker
 WORKDIR /home/docker
 
 RUN Rscript install.R && \
-  rm -f install.R Rplots.pdf
+    mkdir -p /home/docker/data/attention && \
+    mkdir -p /home/docker/data/tracking && \
+    chown -R docker /home/docker/data && \
+    rm -f install.R Rplots.pdf
 
 CMD ["bash"]
