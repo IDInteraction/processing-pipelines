@@ -1,10 +1,10 @@
 [submodule "cppmt/CppMT"]
 	path = cppmt/CppMT
-	url = git@github.com:IDInteraction/CppMT.git
+	url = https://github.com/IDInteraction/CppMT.git
 	branch = idi-merged
 [submodule "cppmt/CppMT-replay"]
 	path = cppmt/CppMT-replay
-	url = git@github.com:IDInteraction/CppMT-replay.git
+	url = https://github.com/IDInteraction/CppMT-replay.git
 [submodule "analysis/tracking-analysis"]
 	path = analysis/tracking-analysis
 	url = https://github.com/IDInteraction/tracking-analysis.git
