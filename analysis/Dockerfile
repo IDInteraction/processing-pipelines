@@ -15,7 +15,7 @@ FROM r-base:3.2.3
 MAINTAINER Robert Haines <robert.haines@manchester.ac.uk>
 
 COPY tracking-analysis/dataProcessing.R /home/docker/
-COPY tracking-analysis/Rnotebooks/*.Rmd /home/docker/
+COPY tracking-analysis/Rnotebooks/*.R* /home/docker/
 COPY resources/ /home/docker
 WORKDIR /home/docker
 
