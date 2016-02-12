@@ -24,15 +24,15 @@ RUN apt-get update -q && \
     apt-get install -qy \
     pandoc \
     --no-install-recommends && \
+    Rscript install.R && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    rm -f install.R Rplots.pdf
 
-RUN Rscript install.R && \
-    mkdir -p /home/docker/data/attention && \
+RUN mkdir -p /home/docker/data/attention && \
     mkdir -p /home/docker/data/tracking && \
     mkdir -p /home/docker/data/output && \
-    chown -R docker:docker /home/docker/* && \
-    rm -f install.R Rplots.pdf
+    chown -R docker:docker /home/docker/*
 
 USER docker
 CMD ["bash"]
