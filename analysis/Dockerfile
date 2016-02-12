@@ -34,5 +34,4 @@ RUN mkdir -p /home/docker/data/attention && \
     mkdir -p /home/docker/data/output && \
     chown -R docker:docker /home/docker/*
 
-USER docker
 CMD ["bash"]
