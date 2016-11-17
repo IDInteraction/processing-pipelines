@@ -9,3 +9,6 @@
 	path = analysis/tracking-analysis
 	url = https://github.com/IDInteraction/tracking-analysis.git
 	branch = docker
+[submodule "opencv/opencv-detection"]
+	path = opencv/opencv-detection
+	url = https://github.com/IDInteraction/opencv-detection.git
