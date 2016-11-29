@@ -12,20 +12,31 @@
 
 FROM idinteraction/base:2.0
 
+
+
 MAINTAINER David Mawdsley <david.mawdsley@manchester.ac.uk>
 
 RUN apt-get update -q && \
     DEBIAN_FRONTEND=noninteractive \
     apt-get install -qy \
     libcv2.4 \
+    mencoder \
     r-cran-stringr \
+    r-cran-rsqlite \
     python-opencv \
+    opencv-data \
+    libopencv-dev \
     python-pandas \
+    libdc1394-22-dev \
+    nano \
     --no-install-recommends && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+# Suggestion from http://stackoverflow.com/questions/12689304/ctypes-error-libdc1394-error-failed-to-initialize-libdc1394
+RUN ln /dev/null /dev/raw1394
+COPY opencv-detection/dynamic/face.py $IDI_HOME/opencv/abc-classifier/dynamic/face.py
+COPY opencv-detection/Ranalysis/*.R $IDI_HOME/opencv/abc-classifier/Ranalysis/
+COPY resources/Makefile $IDI_HOME/
 
-COPY opencv-detection/dynamic/face.py $IDI_HOME/face.py
-COPY opencv-detection/Ranalysis/*.R $IDI_HOME/
-
-
+ENTRYPOINT ["/usr/bin/make"]
+CMD ["track"]
