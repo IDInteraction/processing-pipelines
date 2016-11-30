@@ -27,16 +27,21 @@ RUN apt-get update -q && \
     opencv-data \
     libopencv-dev \
     python-pandas \
+    python-pandas-lib \
+    python-setuptools \
+    python-distribute \
     libdc1394-22-dev \
     nano \
     --no-install-recommends && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+#RUN apt-get install -qy python-setuptools --no-install-recommends
 # Suggestion from http://stackoverflow.com/questions/12689304/ctypes-error-libdc1394-error-failed-to-initialize-libdc1394
 RUN ln /dev/null /dev/raw1394
 COPY opencv-detection/dynamic/face.py $IDI_HOME/opencv/abc-classifier/dynamic/face.py
 COPY opencv-detection/Ranalysis/*.R $IDI_HOME/opencv/abc-classifier/Ranalysis/
+COPY opencv-detection/showboxes/*.py $IDI_HOME/opencv/abc-classifier/
 COPY resources/Makefile $IDI_HOME/
 
 ENTRYPOINT ["/usr/bin/make"]
-CMD ["track"]
+CMD ["all"]
