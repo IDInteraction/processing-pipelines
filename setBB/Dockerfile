@@ -13,13 +13,25 @@
 # using OpenCV face detection and/or initial "full face" specification
 # and rewinding to experiment start
 
-FROM idinteraction/opencv
+FROM idinteraction/cppmt
 
 RUN apt-get update -q && \
     DEBIAN_FRONTEND=noninteractive \
     apt-get install -qy \
-      mplayer \
-      mencoder \
+    libcv2.4 \
+    mencoder \
+    mplayer \
+    r-cran-stringr \
+    r-cran-rsqlite \
+    python-opencv \
+    opencv-data \
+    libopencv-dev \
+    python-pandas \
+    python-pandas-lib \
+    python-setuptools \
+    python-distribute \
+    libdc1394-22-dev \
+    nano \
     --no-install-recommends && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*

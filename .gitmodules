@@ -15,3 +15,6 @@
 [submodule "setBB/setBoundingBox"]
 	path = setBB/setBoundingBox
 	url = git@github.com:IDInteraction/setBoundingBox.git
+[submodule "opencvBB/opencv-detection"]
+	path = opencvBB/opencv-detection
+	url = git@github.com:IDInteraction/opencv-detection.git
