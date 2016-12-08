@@ -10,9 +10,9 @@
 # Author: Robert Haines
 #------------------------------------------------------------------------------
 
-.PHONY: all analysis base cppmt tracking object-tracking video clean really-clean opencv
+.PHONY: all analysis base cppmt tracking object-tracking video setbb clean really-clean opencv
 
-all: .analysis .base .cppmt .tracking .video .opencv
+all: .analysis .base .cppmt .tracking .video .opencv .setbb
 
 # Use empty targets to help make, but hide them as dotfiles.
 analysis: .analysis
@@ -37,11 +37,16 @@ object-tracking: .tracking
 	docker build -t idinteraction/object-tracking object-tracking/
 	touch .tracking
 
-opencv: .opencv
+
 opencv: .opencv
 .opencv: opencv/Dockerfile opencv/resources/Makefile
 		docker build -t idinteraction/opencv opencv/
 		touch .opencv
+
+setbb: .setbb
+.setbb: setBB/Dockerfile setBB/resources/Makefile
+		docker build -t idinteraction/setbb setBB/
+		touch .setbb
 
 
 video: .video
@@ -56,9 +61,10 @@ upload: all
 	docker push idinteraction/object-tracking
 	docker push idinteraction/opencv
 	docker push idinteraction/video
+	docker push idinteraction/setbb
 
 clean:
-	rm -f .analysis .base .cppmt .tracking .opencv .video
+	rm -f .analysis .base .cppmt .tracking .opencv .video .setbb
 	$(MAKE) -C cppmt clean
 	-docker stop `docker ps -aq`
 	-docker rm -fv `docker ps -aq`
@@ -71,3 +77,5 @@ really-clean: clean
 	-docker rmi idinteraction/object-tracking
 	-docker rmi idinteraction/video
 	-docker rmi idinteraction/opencv
+	-docker rmi idinteraction/setbb
+	
