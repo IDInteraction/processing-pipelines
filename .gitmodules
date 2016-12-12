@@ -18,3 +18,6 @@
 [submodule "opencvBB/setBoundingBox"]
 	path = opencvBB/setBoundingBox
 	url = git@github.com:IDInteraction/abc-set-bounding-box.git
+[submodule "object-tracking-keyframe/abc-set-bounding-box"]
+	path = object-tracking-keyframe/abc-set-bounding-box
+	url = git@github.com:IDInteraction/abc-set-bounding-box.git

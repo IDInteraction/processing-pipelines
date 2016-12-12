@@ -8,4 +8,5 @@
 .opencv
 .setbb
 .opencvbb
+.tracking-keyframe
 cppmt/build/
