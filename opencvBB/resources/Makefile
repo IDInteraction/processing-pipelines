@@ -21,7 +21,7 @@ in-dir=./videos
 out-dir=./output
 
 .PHONY: all init track replay clean
-.PRECIOUS: $(out-dir)/%.skip $(out-dir)/%.Userbbox $(out-dir)/%.csv
+.PRECIOUS: $(out-dir)/%.skip $(out-dir)/%User.bbox $(out-dir)/%.csv
 
 all: init
 init: $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.bbox,$(wildcard $(in-dir)/*.mp4))
