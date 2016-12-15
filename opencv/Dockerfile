@@ -40,7 +40,7 @@ RUN apt-get update -q && \
 RUN ln /dev/null /dev/raw1394
 COPY opencv-detection/dynamic/face.py $IDI_HOME/opencv/abc-classifier/dynamic/face.py
 COPY opencv-detection/Ranalysis/*.R $IDI_HOME/opencv/abc-classifier/Ranalysis/
-COPY opencv-detection/showboxes/*.py $IDI_HOME/opencv/abc-classifier/
+#COPY opencv-detection/showboxes/*.py $IDI_HOME/opencv/abc-classifier/
 COPY resources/Makefile $IDI_HOME/
 
 ENTRYPOINT ["/usr/bin/make"]

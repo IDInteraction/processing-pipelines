@@ -25,8 +25,8 @@
 #
 
 facedetect = python  ./opencv/abc-classifier/dynamic/face.py
-convertdetect = Rscript opencv/abc-classifier/Ranalysis/convertdata.R
-showbox = python ./opencv/abc-classifier/showboxes.py
+#convertdetect = Rscript opencv/abc-classifier/Ranalysis/convertdata.R
+#showbox = python ./opencv/abc-classifier/showboxes.py
 in-dir=videos
 out-dir=output
 skip-dir=skip
@@ -37,7 +37,7 @@ skip-dir=skip
 all: init track replay
 init: $(patsubst $(in-dir)/%.mp4,$(skip-dir)/%.skip,$(wildcard $(in-dir)/*.mp4))
 track: init $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.csv,$(wildcard $(in-dir)/*.mp4))
-replay: track $(patsubst $(in-dir)/%.mp4,$(out-dir)/%_out.avi,$(wildcard $(in-dir)/*.mp4))
+#replay: track $(patsubst $(in-dir)/%.mp4,$(out-dir)/%_out.avi,$(wildcard $(in-dir)/*.mp4))
 
 $(out-dir)/%.skip: $(in-dir)/%.mp4
 	@read -p "At what time (in milliseconds) does the experiment start in file '$<'? " tskip; \
@@ -46,16 +46,15 @@ $(out-dir)/%.skip: $(in-dir)/%.mp4
 $(out-dir)/%.csv: $(in-dir)/%.mp4 $(skip-dir)/%.skip
 	$(facedetect) $< \
 	$(subst $(in-dir), $(out-dir), $(patsubst %.mp4, %face.csv, $(word 1, $^))) \
-	$(subst $(in-dir), $(out-dir), $(patsubst %.mp4, %eye.csv, $(word 1, $^))) \
-	$(word 2, $^)
-	$(convertdetect) $(subst $(in-dir), $(out-dir), $(patsubst %.mp4, %face.csv, $(word 1, $^))) \
+	`cat $(word 2, $^)`
+#	$(convertdetect) $(subst $(in-dir), $(out-dir), $(patsubst %.mp4, %face.csv, $(word 1, $^))) \
 	$(subst $(in-dir), $(out-dir), $(patsubst %.mp4, %face.csv, $(word 1, $^)))
-	$(convertdetect) $(subst $(in-dir), $(out-dir), $(patsubst %.mp4, %eye.csv, $(word 1, $^))) \
+#	$(convertdetect) $(subst $(in-dir), $(out-dir), $(patsubst %.mp4, %eye.csv, $(word 1, $^))) \
 		$(subst $(in-dir), $(out-dir), $(patsubst %.mp4, %eye.csv, $(word 1, $^))) \
 
 
 
-$(out-dir)/%_out.avi: $(in-dir)/%.mp4 $(out-dir)/%face.csv $(out-dir)/%eye.csv
+#$(out-dir)/%_out.avi: $(in-dir)/%.mp4 $(out-dir)/%face.csv $(out-dir)/%eye.csv
 	$(showbox) $< $@  $(word 2, $^) $(word 3, $^)
 
 clean:
