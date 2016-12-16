@@ -48,14 +48,14 @@ $(out-dir)/%.csv: $(in-dir)/%.mp4 $(skip-dir)/%.skip
 	$(subst $(in-dir), $(out-dir), $(patsubst %.mp4, %face.csv, $(word 1, $^))) \
 	`cat $(word 2, $^)`
 #	$(convertdetect) $(subst $(in-dir), $(out-dir), $(patsubst %.mp4, %face.csv, $(word 1, $^))) \
-	$(subst $(in-dir), $(out-dir), $(patsubst %.mp4, %face.csv, $(word 1, $^)))
+#	$(subst $(in-dir), $(out-dir), $(patsubst %.mp4, %face.csv, $(word 1, $^)))
 #	$(convertdetect) $(subst $(in-dir), $(out-dir), $(patsubst %.mp4, %eye.csv, $(word 1, $^))) \
-		$(subst $(in-dir), $(out-dir), $(patsubst %.mp4, %eye.csv, $(word 1, $^))) \
+#		$(subst $(in-dir), $(out-dir), $(patsubst %.mp4, %eye.csv, $(word 1, $^))) \
 
 
 
 #$(out-dir)/%_out.avi: $(in-dir)/%.mp4 $(out-dir)/%face.csv $(out-dir)/%eye.csv
-	$(showbox) $< $@  $(word 2, $^) $(word 3, $^)
+#	$(showbox) $< $@  $(word 2, $^) $(word 3, $^)
 
 clean:
 	rm -f $(out-dir)/*.skip
