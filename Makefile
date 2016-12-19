@@ -22,7 +22,7 @@ analysis: .analysis
 
 base: .base
 .base: base/Dockerfile
-	docker build -t idinteraction/base base/
+	docker build -t idinteraction/base:3.0 base/
 	touch .base
 
 cppmt: .cppmt

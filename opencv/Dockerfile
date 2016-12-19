@@ -10,7 +10,7 @@
 # Author: David Mawdsley
 #------------------------------------------------------------------------------
 
-FROM idinteraction/base:2.0
+FROM idinteraction/base:3.0
 
 
 
@@ -28,9 +28,11 @@ RUN apt-get update -q && \
     libopencv-dev \
     python-pandas \
     python-pandas-lib \
+    python-numpy \
     python-setuptools \
     python-distribute \
     libdc1394-22-dev \
+    gmsl \
     nano \
     --no-install-recommends && \
     apt-get clean && \
@@ -40,6 +42,7 @@ RUN apt-get update -q && \
 RUN ln /dev/null /dev/raw1394
 COPY opencv-detection/dynamic/face.py $IDI_HOME/opencv/abc-classifier/dynamic/face.py
 COPY opencv-detection/Ranalysis/*.R $IDI_HOME/opencv/abc-classifier/Ranalysis/
+COPY opencv-detection/recogniser/*.py $IDI_HOME/opencv/recogniser/
 #COPY opencv-detection/showboxes/*.py $IDI_HOME/opencv/abc-classifier/
 COPY resources/Makefile $IDI_HOME/
 

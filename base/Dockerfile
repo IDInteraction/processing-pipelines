@@ -10,7 +10,7 @@
 # Author: Robert Haines
 #------------------------------------------------------------------------------
 
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 
 MAINTAINER Robert Haines <robert.haines@manchester.ac.uk>
 
