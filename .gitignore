@@ -10,4 +10,5 @@
 .opencvbb
 .tracking-keyframe
 .tracking-no-rotation
+.opencv3base
 cppmt/build/
