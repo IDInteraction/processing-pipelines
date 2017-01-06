@@ -21,3 +21,6 @@
 [submodule "object-tracking-keyframe/abc-set-bounding-box"]
 	path = object-tracking-keyframe/abc-set-bounding-box
 	url = git@github.com:IDInteraction/abc-set-bounding-box.git
+[submodule "abc-tdr/resources/abc-tdr"]
+	path = abc-tdr/resources/abc-tdr
+	url = git@github.com:IDInteraction/abc-tdr.git
