@@ -16,6 +16,6 @@ MAINTAINER David Mawdsley <david.mawdsley@manchester.ac.uk>
 
 COPY resources/ $IDI_HOME
 
-ENTRYPOINT ["/usr/bin/make"]
-CMD ["all"]
+#ENTRYPOINT ["/usr/bin/make"]
+#CMD ["all"]
 

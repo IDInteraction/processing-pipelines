@@ -8,6 +8,7 @@
 # UK through grant agreement number EP/M017133/1.
 #
 # Author: Robert Haines
+# Modified: David Mawdsley 6 Jan 2017 to track using OpenCV3 algorithms
 #------------------------------------------------------------------------------
 #
 # IDInteraction object tracking pipeline.
@@ -25,8 +26,8 @@
 # video, performing the object tracking step beforehand if necessary.
 #
 
-cppmt=./cmt
-cppmt-r=./cmt-replay
+tracker=./tracker.py
+#cppmt-r=./cmt-replay
 in-dir=videos
 out-dir=output
 
@@ -36,20 +37,20 @@ out-dir=output
 all: init track replay
 init: $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.bbox,$(wildcard $(in-dir)/*.mp4))
 track: init $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.csv,$(wildcard $(in-dir)/*.mp4))
-replay: track $(patsubst $(in-dir)/%.mp4,$(out-dir)/%_out.avi,$(wildcard $(in-dir)/*.mp4))
+#replay: track $(patsubst $(in-dir)/%.mp4,$(out-dir)/%_out.avi,$(wildcard $(in-dir)/*.mp4))
 
 $(out-dir)/%.skip: $(in-dir)/%.mp4
 	@read -p "At what time (in milliseconds) does the experiment start in file '$<'? " tskip; \
 	echo -n $$tskip > $@
 
-$(out-dir)/%.bbox: $(in-dir)/%.mp4 $(out-dir)/%.skip
-	$(cppmt) --skip-ms=`cat $(word 2, $^)` --process-frames=1 $< | head -1 | cut -d" " -f5 | tr -d '\n' > $@
+#$(out-dir)/%.bbox: $(in-dir)/%.mp4 $(out-dir)/%.skip
+	$(tracker) --skip-ms=`cat $(word 2, $^)` --process-frames=1 $< | head -1 | cut -d" " -f5 | tr -d '\n' > $@
 
 $(out-dir)/%.csv: $(in-dir)/%.mp4 $(out-dir)/%.skip $(out-dir)/%.bbox
-	$(cppmt) --skip-ms=`cat $(word 2, $^)` --bbox=`cat $(word 3, $^)` --with-rotation --quiet --output-file=$@ $<
+	$(tracker) --infile $< --skipframe `cat $(word 2, $^)` --bbox `cat $(word 3, $^) --tracker MEDIANFLOW >$@
 
-$(out-dir)/%_out.avi: $(out-dir)/%.csv $(in-dir)/%.mp4
-	$(cppmt-r) $(word 2, $^) $< $(out-dir)
+#$(out-dir)/%_out.avi: $(out-dir)/%.csv $(in-dir)/%.mp4
+#	$(cppmt-r) $(word 2, $^) $< $(out-dir)
 
 clean:
 	rm -f $(out-dir)/*.skip
