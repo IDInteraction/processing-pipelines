@@ -7,21 +7,15 @@
 # project, funded by the Engineering and Physical Sciences Research Council,
 # UK through grant agreement number EP/M017133/1.
 #
-# Author: Robert Haines
+# Author: Robert Haines/David Mawsdley
+# Perform object tracking with non-rotating bounding box
 #------------------------------------------------------------------------------
 
-FROM ubuntu:16.04
+FROM idinteraction/cppmt:2.0
 
 MAINTAINER Robert Haines <robert.haines@manchester.ac.uk>
 
-RUN apt-get update -q && \
-    DEBIAN_FRONTEND=noninteractive \
-    apt-get install -qy \
-    make \
-    --no-install-recommends && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+COPY resources/ $IDI_HOME
 
-ENV IDI_HOME /idinteraction
-RUN mkdir $IDI_HOME
-WORKDIR $IDI_HOME
+ENTRYPOINT ["/usr/bin/make"]
+CMD ["all"]

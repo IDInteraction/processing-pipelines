@@ -9,4 +9,5 @@
 .setbb
 .opencvbb
 .tracking-keyframe
+.tracking-no-rotation
 cppmt/build/

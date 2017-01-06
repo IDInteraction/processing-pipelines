@@ -23,40 +23,50 @@
 # "make replay" will draw the tracked bounding box into a new copy of the
 # video, performing the object tracking step beforehand if necessary.
 #
+include gmsl
+
+empty:=
+space := $(empty) $(empty)
 
 facedetect = python  ./opencv/abc-classifier/dynamic/face.py
-convertdetect = Rscript opencv/abc-classifier/Ranalysis/convertdata.R
-showbox = python ./opencv/abc-classifier/showboxes.py
+#getconsensus = python ./opencv/recogniser/consensusBB.py
+getpreds = python ./opencv/recogniser/FaceRecognizerPrediction.py
+convertpreds = python ./opencv/recogniser/CppMTtoOpenCV.py
+#convertdetect = Rscript opencv/abc-classifier/Ranalysis/convertdata.R
+#showbox = python ./opencv/abc-classifier/showboxes.py
 in-dir=videos
 out-dir=output
-skip-dir=skip
+annote-dir=annote
 
-.PHONY: all init track replay clean
-.PRECIOUS: $(out-dir)/%.skip $(out-dir)/%.csv
+.PHONY: all init getbbox replay clean fdeigen
+.PRECIOUS: $(out-dir)/%.skip $(out-dir)/%.csv $(out-dir)/%.facetrack $(out-dir)/%.cfacetrack \
+	$(out-dir)/%.eigen $(out-dir)/%.fisher $(out-dir)/%.LBPH $(annote-dir)/%.attention
 
-all: init track replay
-init: $(patsubst $(in-dir)/%.mp4,$(skip-dir)/%.skip,$(wildcard $(in-dir)/*.mp4))
-track: init $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.csv,$(wildcard $(in-dir)/*.mp4))
-replay: track $(patsubst $(in-dir)/%.mp4,$(out-dir)/%_out.avi,$(wildcard $(in-dir)/*.mp4))
+all:  fdlbph fdeigen fdfisher
+#init: $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.skip,$(wildcard $(in-dir)/*.mp4))
+#getbbox: init $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.cfacetrack,$(wildcard $(in-dir)/*.mp4))
+fdeigen: getbbox $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.eigen,$(wildcard $(in-dir)/*.mp4))
+fdfisher: getbbox $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.fisher,$(wildcard $(in-dir)/*.mp4))
+fdlbph: getbbox $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.lbph,$(wildcard $(in-dir)/*.mp4))
+#replay: getbbox $(patsubst $(in-dir)/%.mp4,$(out-dir)/%_out.avi,$(wildcard $(in-dir)/*.mp4))
 
-$(out-dir)/%.skip: $(in-dir)/%.mp4
-	@read -p "At what time (in milliseconds) does the experiment start in file '$<'? " tskip; \
-	echo -n $$tskip > $@
+#$(out-dir)/%.skip: $(in-dir)/%.mp4
+#	@read -p "At what time (in milliseconds) does the experiment start in file '$<'? " tskip; \
+#	echo -n $$tskip > $@
 
-$(out-dir)/%.csv: $(in-dir)/%.mp4 $(skip-dir)/%.skip
-	$(facedetect) $< \
-	$(subst $(in-dir), $(out-dir), $(patsubst %.mp4, %face.csv, $(word 1, $^))) \
-	$(subst $(in-dir), $(out-dir), $(patsubst %.mp4, %eye.csv, $(word 1, $^))) \
-	$(word 2, $^)
-	$(convertdetect) $(subst $(in-dir), $(out-dir), $(patsubst %.mp4, %face.csv, $(word 1, $^))) \
-	$(subst $(in-dir), $(out-dir), $(patsubst %.mp4, %face.csv, $(word 1, $^)))
-	$(convertdetect) $(subst $(in-dir), $(out-dir), $(patsubst %.mp4, %eye.csv, $(word 1, $^))) \
-		$(subst $(in-dir), $(out-dir), $(patsubst %.mp4, %eye.csv, $(word 1, $^))) \
+# TODO split into two rules; facetrack and consensus
+$(out-dir)/%.cfacetrack:  $(out-dir)/%.csv
+	$(convertpreds) $< $@
 
+$(out-dir)/%.eigen: $(in-dir)/%.mp4 $(out-dir)/%.cfacetrack $(out-dir)/%.skip
+	$(getpreds) $< $(word 2, $^)  $(annote-dir)/$(addsuffix -timings.csv, $(call substr, $(notdir $@),1,4))   `cat $(word 3, $^)` 5 Eigen $@
 
+$(out-dir)/%.fisher: $(in-dir)/%.mp4 $(out-dir)/%.cfacetrack $(out-dir)/%.skip
+	$(getpreds) $< $(word 2, $^)  $(annote-dir)/$(addsuffix -timings.csv, $(call substr, $(notdir $@),1,4))   `cat $(word 3, $^)` 5 Fisher $@
 
-$(out-dir)/%_out.avi: $(in-dir)/%.mp4 $(out-dir)/%face.csv $(out-dir)/%eye.csv
-	$(showbox) $< $@  $(word 2, $^) $(word 3, $^)
+$(out-dir)/%.lbph: $(in-dir)/%.mp4 $(out-dir)/%.cfacetrack $(out-dir)/%.skip
+	$(getpreds) $< $(word 2, $^)  $(annote-dir)/$(addsuffix -timings.csv, $(call substr, $(notdir $@),1,4))   `cat $(word 3, $^)` 5 LBPH $@
+
 
 clean:
 	rm -f $(out-dir)/*.skip

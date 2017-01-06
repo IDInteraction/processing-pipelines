@@ -12,7 +12,7 @@
 
 .PHONY: all analysis base cppmt tracking object-tracking video setbb opencvbb clean really-clean opencv object-tracking-keyframe
 
-all: .analysis .base .cppmt .tracking .video .opencv .setbb .opencvbb .tracking-keyframe
+all: .analysis .base .cppmt .tracking .video .opencv .setbb .opencvbb .tracking-keyframe .tracking-no-rotation
 
 # Use empty targets to help make, but hide them as dotfiles.
 analysis: .analysis
@@ -22,7 +22,7 @@ analysis: .analysis
 
 base: .base
 .base: base/Dockerfile
-	docker build -t idinteraction/base base/
+	docker build -t idinteraction/base:3.0 base/
 	touch .base
 
 cppmt: .cppmt
@@ -36,6 +36,13 @@ object-tracking: .tracking
 .tracking: object-tracking/Dockerfile object-tracking/resources/Makefile
 	docker build -t idinteraction/object-tracking object-tracking/
 	touch .tracking
+
+tracking-no-rotation: .tracking-no-rotation
+object-tracking-no-rotation: .tracking-no-rotation
+.tracking-no-rotation: object-tracking-no-rotation/Dockerfile object-tracking-no-rotation/resources/Makefile
+	docker build -t idinteraction/object-tracking-no-rotation object-tracking-no-rotation/
+	touch .tracking-no-rotation
+
 
 tracking-keyframe: .tracking-keyframe
 object-tracking-keyframe: .tracking-keyframe
@@ -70,6 +77,7 @@ upload: all
 	docker push idinteraction/base
 	docker push idinteraction/cppmt
 	docker push idinteraction/object-tracking
+	docker push idinteraction/object-tracking-no-rotation
 	docker push idinteraction/opencv
 	docker push idinteraction/video
 	docker push idinteraction/setbb
@@ -77,7 +85,7 @@ upload: all
 	docker push idinteraction/object-tracking-keyframe
 
 clean:
-	rm -f .analysis .base .cppmt .tracking .opencv .video .setbb .opencvbb .tracking-keyframe
+	rm -f .analysis .base .cppmt .tracking .opencv .video .setbb .opencvbb .tracking-keyframe .tracking-no-rotation
 	$(MAKE) -C cppmt clean
 	-docker stop `docker ps -aq`
 	-docker rm -fv `docker ps -aq`
