@@ -12,7 +12,7 @@
 
 .PHONY: all analysis base cppmt tracking object-tracking video setbb opencvbb clean really-clean opencv object-tracking-keyframe
 
-all: .analysis .base .cppmt .tracking .video .opencv .setbb .opencvbb .tracking-keyframe .tracking-no-rotation
+all: .analysis .base .cppmt .tracking .video .opencv .setbb .opencvbb .tracking-keyframe .opencv3base
 
 # Use empty targets to help make, but hide them as dotfiles.
 analysis: .analysis
@@ -22,8 +22,13 @@ analysis: .analysis
 
 base: .base
 .base: base/Dockerfile
-	docker build -t idinteraction/base:3.0 base/
+	docker build -t idinteraction/base base/
 	touch .base
+
+opencv3base: .opencv3base
+.opencv3base: opencv3base/Dockerfile
+	docker build -t idinteraction/opencv3base opencv3base/
+	touch .opencv3base
 
 cppmt: .cppmt
 .cppmt: .base cppmt/Dockerfile cppmt/Makefile
@@ -36,13 +41,6 @@ object-tracking: .tracking
 .tracking: object-tracking/Dockerfile object-tracking/resources/Makefile
 	docker build -t idinteraction/object-tracking object-tracking/
 	touch .tracking
-
-tracking-no-rotation: .tracking-no-rotation
-object-tracking-no-rotation: .tracking-no-rotation
-.tracking-no-rotation: object-tracking-no-rotation/Dockerfile object-tracking-no-rotation/resources/Makefile
-	docker build -t idinteraction/object-tracking-no-rotation object-tracking-no-rotation/
-	touch .tracking-no-rotation
-
 
 tracking-keyframe: .tracking-keyframe
 object-tracking-keyframe: .tracking-keyframe
@@ -77,15 +75,15 @@ upload: all
 	docker push idinteraction/base
 	docker push idinteraction/cppmt
 	docker push idinteraction/object-tracking
-	docker push idinteraction/object-tracking-no-rotation
 	docker push idinteraction/opencv
 	docker push idinteraction/video
 	docker push idinteraction/setbb
 	docker push idinteraction/opencvbb
 	docker push idinteraction/object-tracking-keyframe
+	docker puck idinteraction/opencv3base
 
 clean:
-	rm -f .analysis .base .cppmt .tracking .opencv .video .setbb .opencvbb .tracking-keyframe .tracking-no-rotation
+	rm -f .analysis .base .cppmt .tracking .opencv .video .setbb .opencvbb .tracking-keyframe opencv3base
 	$(MAKE) -C cppmt clean
 	-docker stop `docker ps -aq`
 	-docker rm -fv `docker ps -aq`
@@ -101,3 +99,4 @@ really-clean: clean
 	-docker rmi idinteraction/setbb
 	-docker rmi idinteraction/opencvbb
 	-docker rmi idinteraction/object-tracking-keyframe
+	-dockre rmi idinteraction/opencv3base
