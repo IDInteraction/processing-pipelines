@@ -31,12 +31,16 @@ tracker=python ./tracker.py
 in-dir=videos
 out-dir=output
 
+TRACKERS=BOOSTING KCF MEDIANFLOW MIL TLD
+
 .PHONY: all init track replay clean
 .PRECIOUS: $(out-dir)/%.skip $(out-dir)/%.bbox $(out-dir)/%.csv
 
 all: init track replay
 init: $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.bbox,$(wildcard $(in-dir)/*.mp4))
-track: init $(patsubst $(in-dir)/%.mp4,$(out-dir)/MEDIANFLOW%.csv,$(wildcard $(in-dir)/*.mp4))
+outfiles: $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.csv$(TRACKERS),$(wildcard $(in-dir)/*.mp4))
+track: init  outfiles
+
 #replay: track $(patsubst $(in-dir)/%.mp4,$(out-dir)/%_out.avi,$(wildcard $(in-dir)/*.mp4))
 
 $(out-dir)/%.skip: $(in-dir)/%.mp4
@@ -46,7 +50,7 @@ $(out-dir)/%.skip: $(in-dir)/%.mp4
 #$(out-dir)/%.bbox: $(in-dir)/%.mp4 $(out-dir)/%.skip
 	$(tracker) --skip-ms=`cat $(word 2, $^)` --process-frames=1 $< | head -1 | cut -d" " -f5 | tr -d '\n' > $@
 
-$(out-dir)/MEDIANFLOW%.csv: $(in-dir)/%.mp4 $(out-dir)/%.skip $(out-dir)/%.bbox
+$(outfiles): $(in-dir)/%.mp4 $(out-dir)/%.skip $(out-dir)/%.bbox
 	$(tracker) --infile $< --skipframe `cat $(word 2, $^)` --bbox `cat $(word 3, $^)` --tracker MEDIANFLOW >$@
 
 #$(out-dir)/%_out.avi: $(out-dir)/%.csv $(in-dir)/%.mp4
