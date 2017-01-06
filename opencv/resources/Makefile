@@ -29,8 +29,9 @@ empty:=
 space := $(empty) $(empty)
 
 facedetect = python  ./opencv/abc-classifier/dynamic/face.py
-getconsensus = python ./opencv/recogniser/consensusBB.py
+#getconsensus = python ./opencv/recogniser/consensusBB.py
 getpreds = python ./opencv/recogniser/FaceRecognizerPrediction.py
+convertpreds = python ./opencv/recogniser/CppMTtoOpenCV.py
 #convertdetect = Rscript opencv/abc-classifier/Ranalysis/convertdata.R
 #showbox = python ./opencv/abc-classifier/showboxes.py
 in-dir=videos
@@ -41,25 +42,21 @@ annote-dir=annote
 .PRECIOUS: $(out-dir)/%.skip $(out-dir)/%.csv $(out-dir)/%.facetrack $(out-dir)/%.cfacetrack \
 	$(out-dir)/%.eigen $(out-dir)/%.fisher $(out-dir)/%.LBPH $(annote-dir)/%.attention
 
-all: init getbbox  fdlbph fdeigen fdfisher
-init: $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.skip,$(wildcard $(in-dir)/*.mp4))
-getbbox: init $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.cfacetrack,$(wildcard $(in-dir)/*.mp4))
+all:  fdlbph fdeigen fdfisher
+#init: $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.skip,$(wildcard $(in-dir)/*.mp4))
+#getbbox: init $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.cfacetrack,$(wildcard $(in-dir)/*.mp4))
 fdeigen: getbbox $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.eigen,$(wildcard $(in-dir)/*.mp4))
 fdfisher: getbbox $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.fisher,$(wildcard $(in-dir)/*.mp4))
 fdlbph: getbbox $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.lbph,$(wildcard $(in-dir)/*.mp4))
 #replay: getbbox $(patsubst $(in-dir)/%.mp4,$(out-dir)/%_out.avi,$(wildcard $(in-dir)/*.mp4))
 
-$(out-dir)/%.skip: $(in-dir)/%.mp4
-	@read -p "At what time (in milliseconds) does the experiment start in file '$<'? " tskip; \
-	echo -n $$tskip > $@
+#$(out-dir)/%.skip: $(in-dir)/%.mp4
+#	@read -p "At what time (in milliseconds) does the experiment start in file '$<'? " tskip; \
+#	echo -n $$tskip > $@
 
 # TODO split into two rules; facetrack and consensus
-$(out-dir)/%.cfacetrack: $(in-dir)/%.mp4 $(out-dir)/%.skip
-	$(facedetect) $< \
-	$(subst $(in-dir), $(out-dir), $(patsubst %.mp4, %.facetrack, $(word 1, $^))) \
-	`cat $(word 2, $^)`
-	$(getconsensus) $(subst $(in-dir), $(out-dir), $(patsubst %.mp4, %.facetrack, $(word 1, $^))) \
-	$(subst $(in-dir), $(out-dir), $(patsubst %.mp4, %.cfacetrack, $(word 1, $^)))
+$(out-dir)/%.cfacetrack:  $(out-dir)/%.csv
+	$(convertpreds) $< $@
 
 $(out-dir)/%.eigen: $(in-dir)/%.mp4 $(out-dir)/%.cfacetrack $(out-dir)/%.skip
 	$(getpreds) $< $(word 2, $^)  $(annote-dir)/$(addsuffix -timings.csv, $(call substr, $(notdir $@),1,4))   `cat $(word 3, $^)` 5 Eigen $@
