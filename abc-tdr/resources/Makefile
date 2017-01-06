@@ -26,7 +26,7 @@
 # video, performing the object tracking step beforehand if necessary.
 #
 
-tracker=./tracker.py
+tracker=python ./tracker.py
 #cppmt-r=./cmt-replay
 in-dir=videos
 out-dir=output
@@ -36,7 +36,7 @@ out-dir=output
 
 all: init track replay
 init: $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.bbox,$(wildcard $(in-dir)/*.mp4))
-track: init $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.csv,$(wildcard $(in-dir)/*.mp4))
+track: init $(patsubst $(in-dir)/%.mp4,$(out-dir)/MEDIANFLOW%.csv,$(wildcard $(in-dir)/*.mp4))
 #replay: track $(patsubst $(in-dir)/%.mp4,$(out-dir)/%_out.avi,$(wildcard $(in-dir)/*.mp4))
 
 $(out-dir)/%.skip: $(in-dir)/%.mp4
@@ -46,8 +46,8 @@ $(out-dir)/%.skip: $(in-dir)/%.mp4
 #$(out-dir)/%.bbox: $(in-dir)/%.mp4 $(out-dir)/%.skip
 	$(tracker) --skip-ms=`cat $(word 2, $^)` --process-frames=1 $< | head -1 | cut -d" " -f5 | tr -d '\n' > $@
 
-$(out-dir)/%.csv: $(in-dir)/%.mp4 $(out-dir)/%.skip $(out-dir)/%.bbox
-	$(tracker) --infile $< --skipframe `cat $(word 2, $^)` --bbox `cat $(word 3, $^) --tracker MEDIANFLOW >$@
+$(out-dir)/MEDIANFLOW%.csv: $(in-dir)/%.mp4 $(out-dir)/%.skip $(out-dir)/%.bbox
+	$(tracker) --infile $< --skipframe `cat $(word 2, $^)` --bbox `cat $(word 3, $^)` --tracker MEDIANFLOW >$@
 
 #$(out-dir)/%_out.avi: $(out-dir)/%.csv $(in-dir)/%.mp4
 #	$(cppmt-r) $(word 2, $^) $< $(out-dir)

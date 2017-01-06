@@ -10,11 +10,12 @@
 # Author: David Mawdsley 
 #------------------------------------------------------------------------------
 
-FROM idinteraction:opencv3base
+FROM idinteraction/opencv3base
 
 MAINTAINER David Mawdsley <david.mawdsley@manchester.ac.uk> 
 
 COPY resources/ $IDI_HOME
+COPY resources/abc-tdr/tracker.py $IDI_HOME
 
 #ENTRYPOINT ["/usr/bin/make"]
 #CMD ["all"]
