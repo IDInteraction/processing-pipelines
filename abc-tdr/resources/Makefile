@@ -38,8 +38,15 @@ TRACKERS=BOOSTING KCF MEDIANFLOW MIL TLD
 
 all: init track replay
 init: $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.bbox,$(wildcard $(in-dir)/*.mp4))
-outfiles: $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.csv$(TRACKERS),$(wildcard $(in-dir)/*.mp4))
-track: init  outfiles
+
+#Presumably there is a better way of doing this:
+track: init $(patsubst $(in-dir)/%.mp4,$(out-dir)/BOOSTING%.csv,$(wildcard $(in-dir)/*.mp4)) $(patsubst $(in-dir)/%.mp4,$(out-dir)/KCF%.csv,$(wildcard $(in-dir)/*.mp4)) $(patsubst $(in-dir)/%.mp4,$(out-dir)/MEDIANFLOW%.csv,$(wildcard $(in-dir)/*.mp4)) $(patsubst $(in-dir)/%.mp4,$(out-dir)/MIL%.csv,$(wildcard $(in-dir)/*.mp4)) $(patsubst $(in-dir)/%.mp4,$(out-dir)/TLD%.csv,$(wildcard $(in-dir)/*.mp4))
+
+
+
+
+
+
 
 #replay: track $(patsubst $(in-dir)/%.mp4,$(out-dir)/%_out.avi,$(wildcard $(in-dir)/*.mp4))
 
@@ -50,8 +57,22 @@ $(out-dir)/%.skip: $(in-dir)/%.mp4
 #$(out-dir)/%.bbox: $(in-dir)/%.mp4 $(out-dir)/%.skip
 	$(tracker) --skip-ms=`cat $(word 2, $^)` --process-frames=1 $< | head -1 | cut -d" " -f5 | tr -d '\n' > $@
 
-$(outfiles): $(in-dir)/%.mp4 $(out-dir)/%.skip $(out-dir)/%.bbox
+$(out-dir)/BOOSTING%.csv: $(in-dir)/%.mp4 $(out-dir)/%.skip $(out-dir)/%.bbox
+	$(tracker) --infile $< --skipframe `cat $(word 2, $^)` --bbox `cat $(word 3, $^)` --tracker BOOSTING >$@
+
+$(out-dir)/KCF%.csv: $(in-dir)/%.mp4 $(out-dir)/%.skip $(out-dir)/%.bbox
+	$(tracker) --infile $< --skipframe `cat $(word 2, $^)` --bbox `cat $(word 3, $^)` --tracker KCF >$@
+	
+$(out-dir)/MEDIANFLOW%.csv: $(in-dir)/%.mp4 $(out-dir)/%.skip $(out-dir)/%.bbox
 	$(tracker) --infile $< --skipframe `cat $(word 2, $^)` --bbox `cat $(word 3, $^)` --tracker MEDIANFLOW >$@
+
+$(out-dir)/MIL%.csv: $(in-dir)/%.mp4 $(out-dir)/%.skip $(out-dir)/%.bbox
+	$(tracker) --infile $< --skipframe `cat $(word 2, $^)` --bbox `cat $(word 3, $^)` --tracker MIL >$@
+
+$(out-dir)/TLD%.csv: $(in-dir)/%.mp4 $(out-dir)/%.skip $(out-dir)/%.bbox
+	$(tracker) --infile $< --skipframe `cat $(word 2, $^)` --bbox `cat $(word 3, $^)` --tracker TLD >$@
+
+
 
 #$(out-dir)/%_out.avi: $(out-dir)/%.csv $(in-dir)/%.mp4
 #	$(cppmt-r) $(word 2, $^) $< $(out-dir)
