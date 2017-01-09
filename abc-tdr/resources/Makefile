@@ -58,19 +58,19 @@ $(out-dir)/%.skip: $(in-dir)/%.mp4
 	$(tracker) --skip-ms=`cat $(word 2, $^)` --process-frames=1 $< | head -1 | cut -d" " -f5 | tr -d '\n' > $@
 
 $(out-dir)/BOOSTING%.csv: $(in-dir)/%.mp4 $(out-dir)/%.skip $(out-dir)/%.bbox
-	$(tracker) --infile $< --skipframe `cat $(word 2, $^)` --bbox `cat $(word 3, $^)` --tracker BOOSTING >$@
+	$(tracker) --infile $< --skipms `cat $(word 2, $^)` --bbox `cat $(word 3, $^)` --tracker BOOSTING >$@
 
 $(out-dir)/KCF%.csv: $(in-dir)/%.mp4 $(out-dir)/%.skip $(out-dir)/%.bbox
-	$(tracker) --infile $< --skipframe `cat $(word 2, $^)` --bbox `cat $(word 3, $^)` --tracker KCF >$@
+	$(tracker) --infile $< --skipms `cat $(word 2, $^)` --bbox `cat $(word 3, $^)` --tracker KCF >$@
 	
 $(out-dir)/MEDIANFLOW%.csv: $(in-dir)/%.mp4 $(out-dir)/%.skip $(out-dir)/%.bbox
-	$(tracker) --infile $< --skipframe `cat $(word 2, $^)` --bbox `cat $(word 3, $^)` --tracker MEDIANFLOW >$@
+	$(tracker) --infile $< --skipms `cat $(word 2, $^)` --bbox `cat $(word 3, $^)` --tracker MEDIANFLOW >$@
 
 $(out-dir)/MIL%.csv: $(in-dir)/%.mp4 $(out-dir)/%.skip $(out-dir)/%.bbox
-	$(tracker) --infile $< --skipframe `cat $(word 2, $^)` --bbox `cat $(word 3, $^)` --tracker MIL >$@
+	$(tracker) --infile $< --skipms `cat $(word 2, $^)` --bbox `cat $(word 3, $^)` --tracker MIL >$@
 
 $(out-dir)/TLD%.csv: $(in-dir)/%.mp4 $(out-dir)/%.skip $(out-dir)/%.bbox
-	$(tracker) --infile $< --skipframe `cat $(word 2, $^)` --bbox `cat $(word 3, $^)` --tracker TLD >$@
+	$(tracker) --infile $< --skipms `cat $(word 2, $^)` --bbox `cat $(word 3, $^)` --tracker TLD >$@
 
 
 
