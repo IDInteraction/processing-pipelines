@@ -42,7 +42,7 @@ annote-dir=annote
 .PRECIOUS: $(out-dir)/%.skip $(out-dir)/%.csv $(out-dir)/%.facetrack $(out-dir)/%.cfacetrack \
 	$(out-dir)/%.eigen $(out-dir)/%.fisher $(out-dir)/%.LBPH $(annote-dir)/%.attention
 
-all:  fdlbph fdeigen fdfisher
+all:  fdlbph fdfisher fdeigen
 #init: $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.skip,$(wildcard $(in-dir)/*.mp4))
 #getbbox: init $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.cfacetrack,$(wildcard $(in-dir)/*.mp4))
 fdeigen: getbbox $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.eigen,$(wildcard $(in-dir)/*.mp4))
