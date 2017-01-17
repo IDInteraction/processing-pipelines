@@ -61,6 +61,7 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE \
     -D PYTHON_EXECUTABLE=/usr/bin/python \
     -D BUILD_EXAMPLES=ON ..
 RUN cd opencv-3.2.0/build/ && make -j4 && make install && ldconfig
+RUN cd $IDI_HOME && rm -r ./opencv-3.2.0 ./opencv_contrib-3.2.0 opencv.zip opencvcontrib.zip
 ENTRYPOINT ["/bin/bash"]
 
 
