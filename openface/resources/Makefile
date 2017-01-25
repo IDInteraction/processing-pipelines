@@ -18,5 +18,5 @@ $(out-dir)/%.openface: $(out-dir)/%.scaled.mp4
 	$(feature) -f $< -of $@  -q
 
 $(out-dir)/%.scaled.mp4: $(in-dir)/%.mp4
-	ffmpeg -i $< -vf scale=iw*2.0:ih*2.0 $@
+	ffmpeg -i $< -c:v libx264 -crf 0 -vf scale=iw*2.0:ih*2.0 $@
 
