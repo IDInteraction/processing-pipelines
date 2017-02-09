@@ -27,3 +27,6 @@
 [submodule "landmark-detection/abc-landmarkDetection"]
 	path = landmark-detection/abc-landmarkDetection
 	url = git@github.com:IDInteraction/abc-landmarkDetection.git
+[submodule "abc-classify/resources/abc-display-tool"]
+	path = abc-classify/resources/abc-display-tool
+	url = https://github.com/IDInteraction/abc-display-tool.git
