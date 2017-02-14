@@ -22,6 +22,7 @@ COPY resources/ $IDI_HOME
 COPY resources/abc-display-tool/abc-classify.py $IDI_HOME
 
 COPY resources/Makefile $IDI_HOME
+COPY resources/getTracking.sh $IDI_HOME
 
 ENTRYPOINT ["/bin/bash"]
 #CMD ["all"]
