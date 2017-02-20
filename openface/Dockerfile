@@ -25,6 +25,9 @@ RUN apt-get update -q && \
 	apt-get install -qy ffmpeg
 COPY resources/Makefile $IDI_HOME
 
+ARG GIT_COMMIT
+
+ENV GIT_COMMIT ${GIT_COMMIT}
 
 ENTRYPOINT ["/bin/bash"]
 
