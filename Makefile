@@ -10,9 +10,9 @@
 # Author: Robert Haines
 #------------------------------------------------------------------------------
 
-.PHONY: all analysis base cppmt tracking object-tracking video setbb opencvbb clean really-clean opencv object-tracking-keyframe
+.PHONY: all analysis base cppmt tracking object-tracking video setbb opencvbb clean really-clean opencv object-tracking-keyframe openface
 
-all: .analysis .base .cppmt .tracking .video .opencv .setbb .opencvbb .tracking-keyframe .opencv3base .abc-tdr
+all: .analysis .base .cppmt .tracking .video .opencv .setbb .opencvbb .tracking-keyframe .opencv3base .abc-tdr .openface
 
 # Use empty targets to help make, but hide them as dotfiles.
 analysis: .analysis
@@ -58,6 +58,11 @@ opencv: .opencv
 .opencv: opencv/Dockerfile opencv/resources/Makefile
 		docker build -t idinteraction/opencv opencv/
 		touch .opencv
+openface: .openface
+.openface: openface/Dockerfile openface/resources/Makefile
+		docker build -t idinteraction/openface openface/
+		touch .openface
+
 
 setbb: .setbb
 .setbb: setBB/Dockerfile setBB/resources/Makefile
@@ -87,9 +92,10 @@ upload: all
 	docker push idinteraction/object-tracking-keyframe
 	docker push idinteraction/opencv3base
 	docker push idinteraction/abc-tdr
+	docker push idinteraction/openface
 
 clean:
-	rm -f .analysis .base .cppmt .tracking .opencv .video .setbb .opencvbb .tracking-keyframe .opencv3base .abc-tdr
+	rm -f .analysis .base .cppmt .tracking .opencv .video .setbb .opencvbb .tracking-keyframe .opencv3base .abc-tdr .openface
 	$(MAKE) -C cppmt clean
 	-docker stop `docker ps -aq`
 	-docker rm -fv `docker ps -aq`
@@ -106,4 +112,6 @@ really-clean: clean
 	-docker rmi idinteraction/opencvbb
 	-docker rmi idinteraction/object-tracking-keyframe
 	-docker rmi idinteraction/opencv3base
-	-docker rmi idinteraction/abc-tdr:
+	-docker rmi idinteraction/abc-tdr
+	-docker rmi idinteraction/openface
+
