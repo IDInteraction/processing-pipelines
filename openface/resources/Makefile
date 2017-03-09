@@ -1,6 +1,4 @@
 # Run Openface on each video
-# We first double the size of each video, since this gave  qualitatively
-# smoother tracking of the face
 
 feature = $(IDI_HOME)/OpenFace/build/bin/FeatureExtraction
 

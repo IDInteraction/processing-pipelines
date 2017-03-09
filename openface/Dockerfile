@@ -18,17 +18,15 @@ FROM idinteraction/opencv3base
 MAINTAINER David Mawdsley <david.mawdsley@manchester.ac.uk>
 RUN apt-get update -q && \
     DEBIAN_FRONTEND=noninteractive \
-    apt-get install -qy build-essential cmake libopenblas-dev liblapack-dev git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev checkinstall libboost-all-dev
-RUN git clone https://github.com/TadasBaltrusaitis/OpenFace.git && cd OpenFace && mkdir build && cd build && cmake -D CMAKE_BUILD_TYPE=RELEASE .. && make
-RUN apt-get update -q && \
-	DEBIAN_FRONTEND=noninteractive \
-	apt-get install -qy ffmpeg
+    apt-get install -qy build-essential cmake libopenblas-dev liblapack-dev git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev checkinstall libboost-all-dev ffmpeg
+RUN git clone https://github.com/TadasBaltrusaitis/OpenFace.git && cd OpenFace && mkdir build && cd build && cmake -D CMAKE_BUILD_TYPE=RELEASE .. && make && rm -rf .git imgs/ lib/ matlab_version/ exe/ videos/ image_sequence/ matlab_runners/
+
 COPY resources/Makefile $IDI_HOME
 
 ARG GIT_COMMIT
 
 ENV GIT_COMMIT ${GIT_COMMIT}
 
-ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["/usr/bin/make"]
 
 
