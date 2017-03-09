@@ -30,3 +30,6 @@
 [submodule "abc-classify/resources/abc-display-tool"]
 	path = abc-classify/resources/abc-display-tool
 	url = https://github.com/IDInteraction/abc-display-tool.git
+[submodule "openface/resources/OpenFace"]
+	path = openface/resources/OpenFace
+	url = https://github.com/TadasBaltrusaitis/OpenFace.git
