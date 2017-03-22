@@ -19,9 +19,8 @@ getFrame <- function(participantCode, experimentpart, event, method = "extractAt
                  paste0("--event=", eventstring),
                  paste0("--externaleventfile=../../DIS2017/Attention/transitionAnnotations.csv")
     )
-    
     system2("../../abc-display-tool/abc-extractAttention.py",
-          args = sysargs,
+            args = sysargs,
             stdout = NULL
     )
     
@@ -55,7 +54,7 @@ getFrame <- function(participantCode, experimentpart, event, method = "extractAt
                                           "frame"),
                             sep = " ",
                             stringsAsFactors = FALSE)
-  
+    
     
     theevent <- eventdata[eventdata$event == eventstring & 
                             eventdata$participantCode == participantCode, ]
@@ -68,8 +67,8 @@ getFrame <- function(participantCode, experimentpart, event, method = "extractAt
   }
   
   
-
-return(outframe)
+  
+  return(outframe)
 }
 
 getDepthName <- function(participantCode, experimentpart, depthLoc, forceWebcam = FALSE){
@@ -102,28 +101,61 @@ getDepthName <- function(participantCode, experimentpart, depthLoc, forceWebcam 
 
 fps <- 30
 
-participantCode <- paste0("P",sprintf("%02d", 1:18))
+participantCode <- paste0("P",sprintf("%02d", 1:18))[1:2]
 numparticipants <- length(participantCode)
 
 seqtimes <- c(15,30,60)
 randframes <- c(30, 60, 120, 240, 450)
-#seqtimes <- c(15)
-#randframes <- c(30)
 experimentpart <- c("part1", "part2")
+
 tracker <- c("cppMT", "depthPCA", "openface")
+trackercombinations <- NULL
+for (i in 1:length(tracker)) {
+  trackercombinations <- c(trackercombinations,
+                           apply(combn(tracker, i), 2, paste, collapse = ","))
+}
+
+
 groundTruthPath <- "../../DIS2017/Groundtruth/"
 trackerPath <- "../../DIS2017/Tracking/"
 PCAPath <- "PCA/"
 classifier <- "../../abc-display-tool/abc-classify.py"
 seqframes <- seqtimes * fps
 
-configurations <- tidyr::crossing(participantCode, experimentpart, tracker,
+configurations <- tidyr::crossing(participantCode, experimentpart, tracker = trackercombinations,
                                   dplyr::bind_rows(tidyr::crossing(config = "shuffle", frames = randframes),
                                                    tidyr::crossing(config = "noshuffle", frames = seqframes))
 )
 
-#warning("TRUNCATING CONFIGS FOR DEVELOPMENT")
-#configurations <- configurations[1:10,]
+genTrackerString <- function(tracker, participantCode, experimentpart, trackerlist = NULL){
+  # Generate a tracker string file.
+  # I.e. given a tracker, e.g. depthPCA, participantCode and experiemnt part generate the 
+  # required command line argument for abc-classify
+  
+  if (stringr::str_count(tracker, ",") > 0 ) {
+    # Call function recursively 
+    trackersplit <- stringr::str_split(tracker, ",", simplify = TRUE)
+    for (trackstring in trackersplit) {
+      trackerlist <- append(trackerlist,
+                            genTrackerString(trackstring, participantCode, experimentpart, trackerlist))
+    }
+  }
+  if (tracker == "openface") {
+    trackerpfn <- paste0(trackerPath, participantCode, "_front.openface.gz")
+  } else if (tracker == "cppMT") {
+    trackerpfn <- paste0(trackerPath, participantCode, "_",
+                         paste0(experimentpart, "_front_cppMT.csv.gz"))
+  } else if (tracker == "depthPCA") {
+    trackerpfn <- paste0(PCAPath, getDepthName(participantCode,
+                                               experimentpart,
+                                               PCAPath, forceWebcam = TRUE)) 
+  } else { 
+    return(trackerlist)
+  }
+ 
+  return((trackerpfn))
+  
+}
 
 
 logConn <- file("Runlog.txt", open = "at")
@@ -134,18 +166,9 @@ for (i in 1:nrow(configurations)) {
   write(paste(configurations[i,], collapse = ":"), file = "Runlog.txt", append = TRUE)
   runoutput <- tempfile()
   
-  if (configurations[i, "tracker"] == "openface") {
-    trackerpfn <- paste0(trackerPath, configurations[i, "participantCode"], "_front.openface.gz")
-  } else if (configurations[i, "tracker"] == "cppMT") {
-    trackerpfn <- paste0(trackerPath, configurations[i, "participantCode"], "_",
-                        paste0(configurations[i,"experimentpart"], "_front_cppMT.csv.gz"))
-  } else if (configurations[i, "tracker"] == "depthPCA") {
-    trackerpfn <- paste0(PCAPath, getDepthName(configurations[i, "participantCode"],
-                              configurations[i, "experimentpart"],
-                              PCAPath, forceWebcam = TRUE)) 
-  } else {
-    stop(paste(configurations[i, "tracker"], "filename formula not yet implemented"))
-  }
+  trackerpfn <- genTrackerString(configurations[i,"tracker"],
+                                 configurations[i,"participantCode"],
+                                 configurations[i,"experimentpart"])
   
   groundtruthpfn <- paste0(groundTruthPath,
                            configurations[i, "participantCode"], "_groundtruth.csv")
@@ -155,14 +178,15 @@ for (i in 1:nrow(configurations)) {
   startframe <- getFrame(configurations[i,"participantCode"], configurations[i,"experimentpart"], 
                          "start")
   endframe <- getFrame(configurations[i,"participantCode"], configurations[i,"experimentpart"], "end")
-  
-  
+  # Replace , in participant code string when we have >1 data source to 
+  # prevent problems with delimters in output file
+  codestring <- stringr::str_replace_all(paste0(configurations[i,], collapse = ":"), ",", "x")
   runargs <- c(paste0("--trackerfile=",  trackerpfn),
                paste0("--startframe=", startframe),
                paste0("--endframe=", endframe),
                paste0("--extgt=", groundtruthpfn),
                "--useexternalgt",
-               paste0("--participantcode=", paste0(configurations[i,], collapse = ":")),
+               paste0("--participantcode=", codestring),
                paste0("--", configurations[i, "config"]),
                paste0("--summaryfile=", runoutput),
                paste0("--externaltrainingframes=", configurations[i,"frames"]),
@@ -170,24 +194,23 @@ for (i in 1:nrow(configurations)) {
                paste0("--maxmissing=15")
   )
   
+  
+   system2(classifier,
+           args = runargs,
+           stdout = NULL
+   )
 
-  system2(classifier,
-          args = runargs,
-          stdout = NULL
-  )
-  
-  
-  results <- read.csv(runoutput, header = FALSE,
-                      col.names = c("configuration",
-                                    "trainedframes",
-                                    "startframe",
-                                    "endframe",
-                                    "crossvalAccuracy",
-                                    "crossvalAccuracySD",
-                                    "crossvalAccuracyLB",
-                                    "crossvalAccuracyUB",
-                                    "groundtruthAccuracy"
-                      ))
+   results <- read.csv(runoutput, header = FALSE,
+                       col.names = c("configuration",
+                                     "trainedframes",
+                                     "startframe",
+                                     "endframe",
+                                     "crossvalAccuracy",
+                                     "crossvalAccuracySD",
+                                     "crossvalAccuracyLB",
+                                     "crossvalAccuracyUB",
+                                     "groundtruthAccuracy"
+                       ))
   if (nrow(results) > 1) {
     stop(paste("Something went wrong for ", configurations[i,]))
   }
@@ -204,7 +227,7 @@ resultsmean <- resultsframe %>% group_by(config, frames, tracker, experimentpart
             avggt = mean(groundtruthAccuracy),
             datapts = length(groundtruthAccuracy))
 if (all(resultsmean$datapts > numparticipants)) {
-  stop("Multiple experimental configs being grouped")
+  warning("Multiple experimental configs being grouped")
 }
 if (all(resultsmean$datapts < numparticipants)) {
   warning("Incomplete run - don't have results for all participants")
