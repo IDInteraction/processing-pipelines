@@ -1,0 +1,47 @@
+---
+title: "Depth data analysis"
+output: html_notebook
+---
+
+## Introduction
+
+This notebook contains details of the analysis of the (front) Kinect depth data for the spot the difference experiment.  Depth data were extracted from the Kinect xef files using the C# code.  For each Kinect frame we obtain:
+
+* Depth (in mm) for each pixel in the depth camera's reference frame.  These data are 512x484 pixels.
+* Depth (in mm) mapped to each pixel in the colour camera's reference frame.  These data are 1920x1080 pixels.  Depth data are not available for some pixels for two reasons:
+     + The depth and colour camera's fields of view (and aspect ratios) are different
+     + The cameras in in slightly different places, to there is a "shadow" where depth data isn't available
+
+The "colour" depth data is obviously much larger, but contains no additional information.   In general it is easier to use the directly captured depth data rather than the mapped data. The mapped data needs to be used if we're focussing on regions of interest obtained by, e.g. Openface or CppMT.
+
+We can "slice" the depth data to exclude the participant's surroundings, and just focus on their head and body.  The accuracy of the depth data is lower towards the edge of the frame, and appears to be noisier (TODO cite Yahng and Zahng).
+
+I have (so far) considered two approaches to using the depth data:
+
+* Using gaussian mixture models to look at the distribution of depths within each frame.  The mean and standard deviation of each mixture component are passed as inputs to the classifier.
+    + The region of interest can be selected using either depth slicing and/or by using data from, e.g. CppMT to focus on the participant's face
+* Using princpal component analysis to reduce the dimensionality of the depth data, and using the outputs from this as inputs to the classifier
+    + The data can be pre-filtered by depth slicing, to exclude the participant's surroundings.
+
+I also explore the effect of _combining_ the various tracking sources at our disposal (i.e. CppMT, OpenFace and depth PCA data)
+
+
+### Gaussian mixture models
+
+TODO writeup fully. 
+
+Briefly... take depth readings in region of interest. Fit mixture model.   Need to fix number of components so constant for classifier.  Identifiability issues; ordering by mean not robust to large changes in behaviour.  Essentially didn't really work.
+
+
+### Principal component analysis
+
+Principal component analysis (PCA) is used to reduce the dimensionality of a data-set.  We use the incremental PCA feature of `sklearn` to extract the first 12 principal components of each frame in each experimental period.  _Incremental_ PCA allows us to batch process the depth data, and so avoid having to load all of the depth data into memory simultaneously.  (The choice of using 12 components was somewhat arbitrary; the performance of the [algorithm scales as $\mathcal{O}(\mathrm{batch size} \times \mathrm{components}^2)$](http://scikit-learn.org/stable/modules/generated/sklearn.decomposition.IncrementalPCA.html#sklearn.decomposition.IncrementalPCA) )
+
+Before performing the PCA analysis we filter each frame to only retain depths between 710 and 1710mm; values outwith this range were set to 0.  These depths were determined using the Shiny app; they retain the majority of the table, and extend as far behind the participant as possible without including the room's walls and ceiling.
+
+The 12 components for each frame are passed to the decision tree classifier.   We repeat the analysis of the DIS2017 abstract using the PCA data instead.
+
+
+
+
+
