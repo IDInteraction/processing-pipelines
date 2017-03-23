@@ -149,7 +149,7 @@ for (part in unique(resultsmean$experimentpart)) {
 
 It appears that combining several tracking sources leads to improved prediction accuracy.
 
-We can look at these results on a per-participant level; these are in the attached pdf:
+We can look at these results on a per-participant level:
 
 ```{r, echo = FALSE}
 
