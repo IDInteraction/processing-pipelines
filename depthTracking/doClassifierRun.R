@@ -19,7 +19,7 @@ getFrame <- function(participantCode, experimentpart, event, method = "extractAt
                  paste0("--event=", eventstring),
                  paste0("--externaleventfile=../../DIS2017/Attention/transitionAnnotations.csv")
     )
-    system2("../../abc-display-tool/abc-extractAttention.py",
+    system2("./abc-display-tool/abc-extractAttention.py",
             args = sysargs,
             stdout = NULL
     )
@@ -101,14 +101,14 @@ getDepthName <- function(participantCode, experimentpart, depthLoc, forceWebcam 
 
 fps <- 30
 
-participantCode <- paste0("P",sprintf("%02d", 1:18))[1:2]
+participantCode <- paste0("P",sprintf("%02d", 1:18))
 numparticipants <- length(participantCode)
 
 seqtimes <- c(15,30,60)
 randframes <- c(30, 60, 120, 240, 450)
 experimentpart <- c("part1", "part2")
 
-tracker <- c("cppMT", "depthPCA", "openface")
+tracker <- c("depthPCA")
 trackercombinations <- NULL
 for (i in 1:length(tracker)) {
   trackercombinations <- c(trackercombinations,
@@ -119,7 +119,7 @@ for (i in 1:length(tracker)) {
 groundTruthPath <- "../../DIS2017/Groundtruth/"
 trackerPath <- "../../DIS2017/Tracking/"
 PCAPath <- "PCA/"
-classifier <- "../../abc-display-tool/abc-classify.py"
+classifier <- "./abc-display-tool/abc-classify.py"
 seqframes <- seqtimes * fps
 
 configurations <- tidyr::crossing(participantCode, experimentpart, tracker = trackercombinations,
@@ -194,7 +194,7 @@ for (i in 1:nrow(configurations)) {
                paste0("--maxmissing=15")
   )
   
-  
+  stop()
    system2(classifier,
            args = runargs,
            stdout = NULL
@@ -222,6 +222,7 @@ for (i in 1:nrow(configurations)) {
 
 resultsframe <- as_tibble(resultsframe)
 write.csv(resultsframe, file = paste0("results", Sys.Date(), ".csv"))
+
 resultsmean <- resultsframe %>% group_by(config, frames, tracker, experimentpart) %>%
   summarise(avgxval = mean(crossvalAccuracy),
             avggt = mean(groundtruthAccuracy),
@@ -241,8 +242,11 @@ conflevs <- ifelse(conflevs == "noshuffle", "sequential", conflevs)
 levels(resultsmean$config) <- conflevs
 
 resultsmean <- resultsmean %>% rename(training = config)
-accuracyfigure <- ggplot(data = resultsmean, aes(x = frames, y = avggt, colour = training)) + geom_line() + geom_line(aes(y = avgxval), linetype = 2) +   facet_wrap( experimentpart ~ tracker) + xlab("training frames") +
+for (part in unique(resultsmean$experimentpart)) {
+  accuracyfigure <- ggplot(data = resultsmean[resultsmean$experimentpart == part,],
+                           aes(x = frames, y = avggt, colour = training)) + geom_line() + geom_line(aes(y = avgxval), linetype = 2) +   facet_grid( experimentpart ~ tracker) + xlab("training frames") +
   ylab("mean accuracy") + theme(legend.position = "bottom")
 # We save the figure here - it gets pulled into the document later
 #ggsave("figures/accuracy.pdf", plot = accuracyfigure, device = "pdf", width = 10, height = 26, units = "cm")
-print(accuracyfigure)
+  print(accuracyfigure)
+}

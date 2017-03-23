@@ -1,6 +1,8 @@
 ---
 title: "Depth data analysis"
-output: html_notebook
+output:
+  pdf_document: default
+  html_notebook: default
 ---
 
 ## Introduction
@@ -39,7 +41,7 @@ Principal component analysis (PCA) is used to reduce the dimensionality of a dat
 
 Before performing the PCA analysis we filter each frame to only retain depths between 710 and 1710mm; values outwith this range were set to 0.  These depths were determined using the Shiny app; they retain the majority of the table, and extend as far behind the participant as possible without including the room's walls and ceiling.
 
-The 12 components for each frame are passed to the decision tree classifier.   We repeat the analysis of the DIS2017 abstract using the PCA data instead.
+The 12 components for each frame are passed to the decision tree classifier.   We repeat the analysis of the DIS2017 abstract using the PCA data instead, which we compare to the webcam CppMT and OpenFace tracking.
 
 ```{r setup, echo=FALSE}
 
@@ -287,7 +289,96 @@ We see that the PCA approach is outperformed by both the CppMT and OpenFace trac
 
 ### Combining serveral data sources.
 
-In this section we explore the effect of using CppMT, OpenFace and DepthPCA data on tracking accuracy.  As well as examining the accuracy of the behaviour classification, we also consider the covariates that were included in the decision tree classifier.  If covariates from one of the data sources are rarely used, this would suggest there was little benefit in including the data source.
+In this section we explore the effect of simultaneously using CppMT, OpenFace and DepthPCA data on tracking accuracy.  This is complicated by the fact that data derived from the Kinect data is missing occasional frames, owing to dropouts in the Kinect data stream.  Where this occurs we drop all data for the entire frame.  There are fewer than 15 such frames in any experiment part (and in general far fewer). The charts below show the mean accuracy obtained for each combination of trackers.  
 
+
+```{r}
+
+resultsframe <- read.csv("results_all_tracker_combinations.csv")
+numparticipants <- length(unique(resultsframe$participantCode))
+
+# Generate coordinates for faceting
+# It's easier to do this on character strings, rather than as a factor
+resultsframe$tracker <- as.character(resultsframe$tracker)
+# Make single source trackers follow the same pattern as the others
+onesource <- stringr::str_count(resultsframe$tracker, ",") == 0
+resultsframe$tracker <- ifelse(onesource, 
+                              paste0("-,", resultsframe$tracker), 
+                             resultsframe$tracker)
+# 1 way trackers go in first column
+# Tokensize trackers
+tracktoken <- stringr::str_match(resultsframe$tracker, "([-\\w]+),?(\\w+)?,?(\\w+)?")
+resultsframe$facetx <- tracktoken[,2]
+resultsframe$facety <- tracktoken[,3]
+
+resultsframe$facetx <- ifelse(!is.na(tracktoken[,4]), "all", resultsframe$facetx)
+resultsframe$facety <- ifelse(!is.na(tracktoken[,4]), "all", resultsframe$facety)
+
+resultsframe$facetx <- factor(resultsframe$facetx, levels=c("-", "cppMT", "depthPCA", "all"))
+resultsframe$facety <- factor(resultsframe$facety, levels=c("cppMT", "depthPCA", "openface", "all"))
+
+# Print results of encoding to check it worked
+#unique(resultsframe[,c("tracker", "facetx", "facety")])
+
+resultsmean <- resultsframe %>% group_by(config, frames, tracker, experimentpart, facetx, facety) %>%
+  summarise(avgxval = mean(crossvalAccuracy),
+            avggt = mean(groundtruthAccuracy),
+            datapts = length(groundtruthAccuracy))
+if (all(resultsmean$datapts > numparticipants)) {
+  warning("Multiple experimental configs being grouped")
+}
+if (all(resultsmean$datapts < numparticipants)) {
+  warning("Incomplete run - don't have results for all participants")
+}
+resultsmean$avgxval <- ifelse(resultsmean$config == "shuffle", resultsmean$avgxval, NA)
+# recode levels to nicer names
+conflevs <- levels(resultsmean$config)
+conflevs <- ifelse(conflevs == "shuffle", "randomised", conflevs)
+
+conflevs <- ifelse(conflevs == "noshuffle", "sequential", conflevs)
+levels(resultsmean$config) <- conflevs
+
+resultsmean <- resultsmean %>% rename(training = config)
+
+
+for (part in unique(resultsmean$experimentpart)) {
+  accuracyfigure <- ggplot(data = resultsmean[resultsmean$experimentpart == part,],
+                           aes(x = frames, y = avggt, colour = training)) + geom_line() + geom_line(aes(y = avgxval), linetype = 2) +   facet_grid( facetx ~ facety) + xlab("training frames") +
+  ylab("mean accuracy") + theme(legend.position = "bottom") + ggtitle(part)
+# We save the figure here - it gets pulled into the document later
+#ggsave("figures/accuracy.pdf", plot = accuracyfigure, device = "pdf", width = 10, height = 26, units = "cm")
+  print(accuracyfigure)
+}
+
+
+```
+
+It appears that combining several tracking sources leads to improved prediction accuracy.
+
+We can look at these results on a per-participant level; these are in the attached pdf:
+(There appears to be a bug with RNotebooks where the requested plot ordering isn't respected)
+
+```{r}
+
+resultsframe$crossvalAccuracy <- ifelse(resultsframe$config == "noshuffle",
+                                        NA,
+                                        resultsframe$crossvalAccuracy)
+
+pdf("participantPlots.pdf")
+for (part in unique(resultsframe$experimentpart)) {
+  for(participant in sort(unique(resultsframe$participantCode))){
+    particpantaccuracyfigure <- ggplot(data = resultsframe[resultsframe$experimentpart == part &
+                                                   resultsframe$participantCode == participant,],
+                             aes(x = frames, y = groundtruthAccuracy, colour = config)) + geom_line() + 
+      geom_line(aes(y = crossvalAccuracy), linetype = 2) +   facet_grid( facetx ~ facety) + xlab("training frames") +
+      ylab("mean accuracy") + theme(legend.position = "bottom") + ggtitle(paste(participant, part)) + 
+      ylim(0.5,1)
+    # We save the figure here - it gets pulled into the document later
+    #ggsave("figures/accuracy.pdf", plot = accuracyfigure, device = "pdf", width = 10, height = 26, units = "cm")
+   print(particpantaccuracyfigure)
+  }
+}
+dev.off()
+```
 
 
