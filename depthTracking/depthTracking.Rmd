@@ -4,8 +4,9 @@ output:
   pdf_document: default
   html_notebook: default
 ---
-```{r}
+```{r, echo = FALSE, message = FALSE}
 library(tidyverse)
+yrange = c(0.4,1)
 ```
 
 ## Introduction
@@ -15,17 +16,19 @@ This notebook contains details of the analysis of the (front) Kinect depth data 
 * Depth (in mm) for each pixel in the depth camera's reference frame.  These data are 512x484 pixels.
 * Depth (in mm) mapped to each pixel in the colour camera's reference frame.  These data are 1920x1080 pixels.  Depth data are not available for some pixels for two reasons:
      + The depth and colour camera's fields of view (and aspect ratios) are different
-     + The cameras in in slightly different places, to there is a "shadow" where depth data isn't available
+     + The cameras in in slightly different places, so there is a shadow where depth data isn't available
 
 The "colour" depth data is obviously much larger, but contains no additional information.   In general it is easier to use the directly captured depth data rather than the mapped data. The mapped data needs to be used if we're focussing on regions of interest obtained by, e.g. Openface or CppMT.
 
-We can "slice" the depth data to exclude the participant's surroundings, and just focus on their head and body.  The accuracy of the depth data is lower towards the edge of the frame, and appears to be noisier (TODO cite Yahng and Zahng).
+We can "slice" the depth data to exclude the participant's surroundings, and just focus on their head and body.  The accuracy of the depth data [is lower towards the edge of the frame, and appears to be noisier][yz].
+
+
 
 I have (so far) considered two approaches to using the depth data:
 
-* Using gaussian mixture models to look at the distribution of depths within each frame.  The mean and standard deviation of each mixture component are passed as inputs to the classifier.
+* Using Gaussian mixture models to look at the distribution of depths within each frame.  The mean and standard deviation of each mixture component are passed as inputs to the classifier.
     + The region of interest can be selected using either depth slicing and/or by using data from, e.g. CppMT to focus on the participant's face
-* Using princpal component analysis to reduce the dimensionality of the depth data, and using the outputs from this as inputs to the classifier
+* Using principal component analysis to reduce the dimensionality of the depth data, and using the outputs from this as inputs to the classifier
     + The data can be pre-filtered by depth slicing, to exclude the participant's surroundings.
 
 I also explore the effect of _combining_ the various tracking sources at our disposal (i.e. CppMT, OpenFace and depth PCA data)
@@ -33,10 +36,15 @@ I also explore the effect of _combining_ the various tracking sources at our dis
 
 ### Gaussian mixture models
 
-TODO writeup fully. 
+(I still need to run this through for all participants. It works better than I initially thought (~75\% accuracy for P01 part 1); I was previously having issues getting the kinect and webcam streams in sync)
 
-Briefly... take depth readings in region of interest. Fit mixture model.   Need to fix number of components so constant for classifier.  Identifiability issues; ordering by mean not robust to large changes in behaviour.  Essentially didn't really work.
+In this approach we fit a mixture of Gaussian to the histogram of the depths observed in the frame.  Before doing so we apply depth slicing to exclude the depth readings from the walls and ceiling of the room.
 
+We need to fix the number of Gaussians fitted, so that the same number of covariates are passed for each frame of the classifier; based on visual inspection of a few frames, 4 gaussians were used (it would probably be better to fit a number of different components on a sample of frames and compare model fit via BIC).
+
+The ordering of components from the model is not guaranteed, so we sort components by their mean.  This does not, however, guarantee each component is measuring the same part of the depth histogram; changes in participant pose can cause the model to switch between different configurations of Gaussians (TODO - include a couple of frames showing this; it's difficult to explain in words.)
+ 
+We pass the mean and standard deviation of each component to the classifer as our "tracking" data.
 
 ### Principal component analysis
 
@@ -75,7 +83,7 @@ resultsmean <- resultsmean %>% rename(training = config)
 ```{r, echo=FALSE}
 singletracker <- stringr::str_count(resultsmean$tracker, ",") == 0 
 accuracyfigure <- ggplot(data = resultsmean[singletracker, ], aes(x = frames, y = avggt, colour = training)) + geom_line() + geom_line(aes(y = avgxval), linetype = 2) +   facet_wrap( experimentpart ~ tracker) + xlab("training frames") +
-  ylab("mean accuracy") + theme(legend.position = "bottom")
+  ylab("mean accuracy") + theme(legend.position = "bottom") + ylim(yrange)
 print(accuracyfigure)
 ```
 
@@ -83,7 +91,7 @@ We see that the PCA approach is outperformed by both the CppMT and OpenFace trac
 
 ### Combining serveral data sources.
 
-In this section we explore the effect of simultaneously using CppMT, OpenFace and DepthPCA data on tracking accuracy.  This is complicated by the fact that data derived from the Kinect data is missing occasional frames, owing to dropouts in the Kinect data stream.  Where this occurs we drop all data for the entire frame.  There are fewer than 15 such frames in any experiment part (and in general far fewer). The charts below show the mean accuracy obtained for each combination of trackers, for each part of the experiment.
+In this section we explore the effect of simultaneously using CppMT, OpenFace and DepthPCA data on tracking accuracy.  This is complicated by the fact that data derived from the Kinect data is missing occasional frames, owing to dropouts in the Kinect data stream.  Where this occurs we drop all data for the entire frame.  There are fewer than 15 such frames in any experiment part (and in general far fewer). The charts below show the mean accuracy obtained for each combination of trackers, for each part of the experiment.  The top row shows the performance of each source of tracking data in isolation. The remaining cells show the pairwise combinations of the three sources, with the exception of the lower right cell which shows the performance of all three sources.
 
 
 ```{r, echo = FALSE}
@@ -138,7 +146,7 @@ resultsmean <- resultsmean %>% rename(training = config)
 for (part in unique(resultsmean$experimentpart)) {
   accuracyfigure <- ggplot(data = resultsmean[resultsmean$experimentpart == part,],
                            aes(x = frames, y = avggt, colour = training)) + geom_line() + geom_line(aes(y = avgxval), linetype = 2) +   facet_grid( facetx ~ facety) + xlab("training frames") +
-  ylab("mean accuracy") + theme(legend.position = "bottom") + ggtitle(part) + ylim(0.5,1)
+  ylab("mean accuracy") + theme(legend.position = "bottom") + ggtitle(part) + ylim(yrange)
 # We save the figure here - it gets pulled into the document later
 #ggsave("figures/accuracy.pdf", plot = accuracyfigure, device = "pdf", width = 10, height = 26, units = "cm")
   print(accuracyfigure)
@@ -149,9 +157,10 @@ for (part in unique(resultsmean$experimentpart)) {
 
 It appears that combining several tracking sources leads to improved prediction accuracy.
 
-We can look at these results on a per-participant level:
+I plan to look at the covariates used in the trees to better undestand how the data-sources are being used.  It may be that the depth data is used more in part two of the experiment, where the tracking data is less reliable.
 
-```{r, echo = FALSE}
+
+```{r, echo = FALSE, eval = FALSE}
 
 resultsframe$crossvalAccuracy <- ifelse(resultsframe$config == "noshuffle",
                                         NA,
@@ -165,7 +174,7 @@ for (part in unique(resultsframe$experimentpart)) {
                              aes(x = frames, y = groundtruthAccuracy, colour = config)) + geom_line() + 
       geom_line(aes(y = crossvalAccuracy), linetype = 2) +   facet_grid( facetx ~ facety) + xlab("training frames") +
       ylab("mean accuracy") + theme(legend.position = "bottom") + ggtitle(paste(participant, part)) + 
-      ylim(0.5,1)
+      ylim(yrange)
     # We save the figure here - it gets pulled into the document later
     #ggsave("figures/accuracy.pdf", plot = accuracyfigure, device = "pdf", width = 10, height = 26, units = "cm")
    print(particpantaccuracyfigure)
@@ -175,3 +184,5 @@ for (part in unique(resultsframe$experimentpart)) {
 ```
 
 
+[yz]: http://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=7067384 "Evaluating and Improving the Depth Accuracy
+of Kinect for Windows v2, L Yang et al. IEEE Sensors Journal 15(8) 2015"
