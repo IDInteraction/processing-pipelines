@@ -38,10 +38,12 @@ temptimedir=./temptimedir
 # i.e. $(framesourcedir)/P01 etc.
 framesourcedir=./framesource
 .PHONY: participants gentimes all
-.PRECIOUS: $(outdir)/% $(tempdir)/% $(temptimedir)/%
+.PRECIOUS: $(outdir)/% $(tempdir)/% $(temptimedir)/%.start1  $(temptimedir)/%.start2 $(temptimedir)/%.end1  $(temptimedir)/%.end2
+
+
 # Might be a quicker way of doing this?? Traverses the whole tree
 participants = $(shell find $(framesourcedir)/P* -type d)
-#PHONY: all
+PHONY: all gentimes start1 start2 end1 end2 pca pca1 pca2 mixture mixture1 mixture2
 #all: ; $(info $$var is [${var}])echo Hello world
 all: mixture pca 
 
