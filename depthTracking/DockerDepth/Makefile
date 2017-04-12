@@ -41,8 +41,7 @@ framesourcedir=./framesource
 .PRECIOUS: $(outdir)/% $(tempdir)/% $(temptimedir)/%.start1  $(temptimedir)/%.start2 $(temptimedir)/%.end1  $(temptimedir)/%.end2
 
 
-# Might be a quicker way of doing this?? Traverses the whole tree
-participants = $(shell find $(framesourcedir)/P* -type d)
+participants = $(shell find $(framesourcedir)/P* -maxdepth 0 -type d)
 PHONY: all gentimes start1 start2 end1 end2 pca pca1 pca2 mixture mixture1 mixture2
 #all: ; $(info $$var is [${var}])echo Hello world
 all: mixture pca 
