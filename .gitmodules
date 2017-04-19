@@ -18,3 +18,6 @@
 [submodule "opencvBB/opencv-detection"]
 	path = opencvBB/opencv-detection
 	url = git@github.com:IDInteraction/opencv-detection.git
+[submodule "abc-extractattention/abc-display-tool"]
+	path = abc-extractattention/abc-display-tool
+	url = git@github.com:IDInteraction/abc-display-tool.git
