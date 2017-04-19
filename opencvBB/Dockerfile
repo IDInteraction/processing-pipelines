@@ -13,7 +13,7 @@
 # using OpenCV face detection and then rewinding to experiment start
 
 
-FROM idinteraction/cppmt
+FROM idinteraction/cppmt:2.0
 
 
 
@@ -35,6 +35,9 @@ RUN apt-get update -q && \
     python-setuptools \
     python-distribute \
     libdc1394-22-dev \
+    bc \
+    libstdc++6 \
+    libstdc++6-4.4-dev \
     nano \
     --no-install-recommends && \
     apt-get clean && \
@@ -43,7 +46,7 @@ RUN apt-get update -q && \
 # Suggestion from http://stackoverflow.com/questions/12689304/ctypes-error-libdc1394-error-failed-to-initialize-libdc1394
 
 COPY resources/ $IDI_HOME
-COPY opencv-detection/faceBBox $IDI_HOME
+COPY setBoundingBox $IDI_HOME
 
 
 ENTRYPOINT ["/usr/bin/make"]

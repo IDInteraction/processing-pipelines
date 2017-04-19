@@ -10,6 +10,7 @@
 # Author: Robert Haines
 #------------------------------------------------------------------------------
 
+<<<<<<< HEAD
 .PHONY: all analysis base cppmt tracking object-tracking video clean really-clean abc-extractattention abc-classify
 
 all: .analysis .base .cppmt .tracking .video .abc-extractattention .abc-classify
@@ -25,6 +26,16 @@ base: .base
 	docker build -t idinteraction/base base/
 	touch .base
 
+opencv3base: .opencv3base
+.opencv3base: opencv3base/Dockerfile
+	docker build -t idinteraction/opencv3base opencv3base/
+	touch .opencv3base
+
+abc-tdr: .abc-tdr
+.abc-tdr: abc-tdr/Dockerfile
+	docker build -t idinteraction/abc-tdr abc-tdr
+	touch .abc-tdr
+
 cppmt: .cppmt
 .cppmt: .base cppmt/Dockerfile cppmt/Makefile
 	$(MAKE) -C cppmt
@@ -37,7 +48,35 @@ object-tracking: .tracking
 	docker build -t idinteraction/object-tracking object-tracking/
 	touch .tracking
 
+tracking-keyframe: .tracking-keyframe
+object-tracking-keyframe: .tracking-keyframe
+.tracking-keyframe: object-tracking-keyframe/Dockerfile object-tracking-keyframe/resources/Makefile
+		docker build -t idinteraction/object-tracking-keyframe object-tracking-keyframe/
+		touch .tracking-keyframe
 
+
+opencv: .opencv
+.opencv: opencv/Dockerfile opencv/resources/Makefile
+		docker build -t idinteraction/opencv opencv/
+		touch .opencv
+openface: .openface
+.openface: openface/Dockerfile openface/resources/Makefile
+		docker build -t idinteraction/openface openface/
+		touch .openface
+
+
+setbb: .setbb
+.setbb: setBB/Dockerfile setBB/resources/Makefile
+		docker build -t idinteraction/setbb setBB/
+		touch .setbb
+
+opencvbb: .opencvbb
+.opencvbb:	opencvBB/Dockerfile opencvBB/resources/Makefile
+	docker build -t idinteraction/opencvbb opencvBB
+	touch .opencvbb
+
+
+video: .video
 .video: .base video/Dockerfile video/resources/Makefile
 	docker build -t idinteraction/video video/
 	touch .video
@@ -55,6 +94,7 @@ upload: all
 	docker push idinteraction/base
 	docker push idinteraction/cppmt
 	docker push idinteraction/object-tracking
+	docker push idinteraction/opencv
 	docker push idinteraction/video
 	docker push idinteraction/abc-extractattention
 	docker push idinteraction/abc-classify
@@ -73,3 +113,4 @@ really-clean: clean
 	-docker rmi idinteraction/video
 	-docker rmi idinteraction/abc-extractattention
 	-docker rmi idinteraction/abc-classify
+

@@ -10,22 +10,22 @@
 # Author: David Mawdsley (modified from Robert Haines' object tracking pipeline)
 #------------------------------------------------------------------------------
 #
-# IDInteraction bounding box setting pipeline.
+# IDInteraction object tracking process
 #
-# This Makefile is used to drive the OpenCV face detection bounding box setting # process.
+# This Makefile is used to drive the manual bounding box setting process.
+#
 
-
-setBB=./getface.py
-rewindBB=./rewindBB.sh
+setBB=./setBB.py
+trackvid=./trackFromKeyFrame.sh
 in-dir=./videos
 out-dir=./output
 
-.PHONY: all init track replay clean
+.PHONY: all init setbb track clean
 .PRECIOUS: $(out-dir)/%.skip $(out-dir)/%User.bbox $(out-dir)/%.csv
 
-all: init
-init: $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.bbox,$(wildcard $(in-dir)/*.mp4))
-#setbb: init $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.csv,$(wildcard $(in-dir)/*.mp4))
+all: init track
+init: $(patsubst $(in-dir)/%.mp4,$(out-dir)/%User.bbox,$(wildcard $(in-dir)/*.mp4))
+track: init $(patsubst $(in-dir)/%.mp4,$(out-dir)/%.csv,$(wildcard $(in-dir)/*.mp4))
 #replay: track $(patsubst $(in-dir)/%.mp4,$(out-dir)/%_out.avi,$(wildcard $(in-dir)/*.mp4))
 
 $(out-dir)/%.skip: $(in-dir)/%.mp4
@@ -35,8 +35,9 @@ $(out-dir)/%.skip: $(in-dir)/%.mp4
 $(out-dir)/%User.bbox: $(in-dir)/%.mp4 $(out-dir)/%.skip
 	$(setBB) $<  `cat $(word 2, $^)`   > $@
 
-$(out-dir)/%.bbox: $(in-dir)/%.mp4 $(out-dir)/%User.bbox $(out-dir)/%.skip
-	$(rewindBB) $< $(word 2, $^) $(word 3, $^); cat outbbox.csv > $@
+
+$(out-dir)/%.csv: $(in-dir)/%.mp4 $(out-dir)/%User.bbox $(out-dir)/%.skip
+	$(trackvid) $< $(word 2, $^) $(word 3, $^); cat combinedTracking.csv > $@
 
 # $(out-dir)/%.csv: $(in-dir)/%.mp4 $(out-dir)/%.skip $(out-dir)/%.bbox
 # 	$(cppmt) --skip-ms=`cat $(word 2, $^)` --bbox=`cat $(word 3, $^)` --with-rotation --quiet --output-file=$@ $<

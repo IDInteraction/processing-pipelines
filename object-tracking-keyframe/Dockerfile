@@ -9,18 +9,18 @@
 #
 # Author: David Mawdsley
 #------------------------------------------------------------------------------
+# Docker image track from a bounding box specified after the experiment has
+# begun; track backwards from bounding box frame to expt start and forwards
+# from bounding box frame to video end; combine both parts
 
-FROM idinteraction/base:3.0
-
-
-
-MAINTAINER David Mawdsley <david.mawdsley@manchester.ac.uk>
+FROM idinteraction/cppmt:2.0
 
 RUN apt-get update -q && \
     DEBIAN_FRONTEND=noninteractive \
     apt-get install -qy \
     libcv2.4 \
     mencoder \
+    mplayer \
     r-cran-stringr \
     r-cran-rsqlite \
     python-opencv \
@@ -28,23 +28,21 @@ RUN apt-get update -q && \
     libopencv-dev \
     python-pandas \
     python-pandas-lib \
-    python-numpy \
     python-setuptools \
     python-distribute \
     libdc1394-22-dev \
-    gmsl \
     nano \
+    bc  \
     --no-install-recommends && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-#RUN apt-get install -qy python-setuptools --no-install-recommends
-# Suggestion from http://stackoverflow.com/questions/12689304/ctypes-error-libdc1394-error-failed-to-initialize-libdc1394
-RUN ln /dev/null /dev/raw1394
-COPY opencv-detection/dynamic/face.py $IDI_HOME/opencv/abc-classifier/dynamic/face.py
-COPY opencv-detection/Ranalysis/*.R $IDI_HOME/opencv/abc-classifier/Ranalysis/
-COPY opencv-detection/recogniser/*.py $IDI_HOME/opencv/recogniser/
-#COPY opencv-detection/showboxes/*.py $IDI_HOME/opencv/abc-classifier/
-COPY resources/Makefile $IDI_HOME/
+
+
+MAINTAINER David Mawdsley <david.mawdsley@manchester.ac.uk>
+
+COPY resources/ $IDI_HOME
+COPY abc-set-bounding-box/ $IDI_HOME
+
 
 ENTRYPOINT ["/usr/bin/make"]
 CMD ["all"]

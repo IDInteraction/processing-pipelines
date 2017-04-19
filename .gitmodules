@@ -14,10 +14,22 @@
 	url = https://github.com/IDInteraction/opencv-detection.git
 [submodule "setBB/setBoundingBox"]
 	path = setBB/setBoundingBox
-	url = git@github.com:IDInteraction/setBoundingBox.git
-[submodule "opencvBB/opencv-detection"]
-	path = opencvBB/opencv-detection
-	url = git@github.com:IDInteraction/opencv-detection.git
-[submodule "abc-extractattention/abc-display-tool"]
-	path = abc-extractattention/abc-display-tool
-	url = git@github.com:IDInteraction/abc-display-tool.git
+	url = git@github.com:IDInteraction/abc-set-bounding-box.git
+[submodule "opencvBB/setBoundingBox"]
+	path = opencvBB/setBoundingBox
+	url = git@github.com:IDInteraction/abc-set-bounding-box.git
+[submodule "object-tracking-keyframe/abc-set-bounding-box"]
+	path = object-tracking-keyframe/abc-set-bounding-box
+	url = git@github.com:IDInteraction/abc-set-bounding-box.git
+[submodule "abc-tdr/resources/abc-tdr"]
+	path = abc-tdr/resources/abc-tdr
+	url = git@github.com:IDInteraction/abc-tdr.git
+[submodule "landmark-detection/abc-landmarkDetection"]
+	path = landmark-detection/abc-landmarkDetection
+	url = git@github.com:IDInteraction/abc-landmarkDetection.git
+[submodule "abc-classify/resources/abc-display-tool"]
+	path = abc-classify/resources/abc-display-tool
+	url = https://github.com/IDInteraction/abc-display-tool.git
+[submodule "openface/resources/OpenFace"]
+	path = openface/resources/OpenFace
+	url = https://github.com/TadasBaltrusaitis/OpenFace.git
