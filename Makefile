@@ -101,6 +101,8 @@ upload: all
 	docker push idinteraction/video
 	docker push idinteraction/abc-extractattention
 	docker push idinteraction/abc-classify
+	docker push idinteraction/abc-classifysweep
+
 clean:
 	rm -f .analysis .base .cppmt .tracking .video .abc-extractattention .abc-classify
 	$(MAKE) -C cppmt clean
@@ -116,4 +118,5 @@ really-clean: clean
 	-docker rmi idinteraction/video
 	-docker rmi idinteraction/abc-extractattention
 	-docker rmi idinteraction/abc-classify
+	-docker rmi idinteraction/abc-classifysweep
 
