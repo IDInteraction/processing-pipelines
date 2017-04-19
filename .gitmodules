@@ -21,3 +21,6 @@
 [submodule "abc-extractattention/abc-display-tool"]
 	path = abc-extractattention/abc-display-tool
 	url = git@github.com:IDInteraction/abc-display-tool.git
+[submodule "abc-classifysweep/jobrunner"]
+	path = abc-classifysweep/jobrunner
+	url = git@github.com:mawds/jobrunner.git

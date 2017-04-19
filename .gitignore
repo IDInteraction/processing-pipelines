@@ -9,4 +9,5 @@ cppmt/build/
 *.swp
 .abc-extractattention
 .abc-classify
+.abc-classifysweep
 
