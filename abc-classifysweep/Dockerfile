@@ -27,7 +27,7 @@ COPY jobrunner/ $IDI_HOME/jobrunner
 ARG GIT_COMMIT
 ENV GIT_COMMIT ${GIT_COMMIT}
 
-#ENTRYPOINT ["/usr/bin/make"]
-ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["/usr/bin/make"]
+#ENTRYPOINT ["/bin/bash"]
 #ENTRYPOINT ["abc-display-tool/abc-classify.py"]
-#CMD ["all"]
+CMD ["all"]
