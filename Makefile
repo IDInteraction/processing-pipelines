@@ -1,5 +1,5 @@
 #------------------------------------------------------------------------------
-# Copyright (c) 2015, 2016 The University of Manchester, UK.
+# Copyright (c) 2015, 2016, 2017 The University of Manchester, UK.
 #
 # Licenced under LGPL version 2.1. See LICENCE for details.
 #
@@ -10,9 +10,9 @@
 # Author: Robert Haines
 #------------------------------------------------------------------------------
 
-.PHONY: all analysis base cppmt tracking object-tracking video clean really-clean
+.PHONY: all analysis base cppmt tracking object-tracking video clean really-clean abc-extractattention abc-classify
 
-all: .analysis .base .cppmt .tracking .video
+all: .analysis .base .cppmt .tracking .video .abc-extractattention .abc-classify
 
 # Use empty targets to help make, but hide them as dotfiles.
 analysis: .analysis
@@ -37,10 +37,18 @@ object-tracking: .tracking
 	docker build -t idinteraction/object-tracking object-tracking/
 	touch .tracking
 
-video: .video
+
 .video: .base video/Dockerfile video/resources/Makefile
 	docker build -t idinteraction/video video/
 	touch .video
+
+.abc-extractattention: .base abc-extractattention/Dockerfile 
+	docker build -t idinteraction/abc-extractattention abc-extractattention/
+	touch .abc-extractattention
+
+.abc-classify: .base abc-classify/Dockerfile
+	docker build -t idinteraction/abc-classify abc-classify/
+	touch .abc-classify
 
 upload: all
 	docker push idinteraction/analysis
@@ -48,9 +56,10 @@ upload: all
 	docker push idinteraction/cppmt
 	docker push idinteraction/object-tracking
 	docker push idinteraction/video
-
+	docker push idinteraction/abc-extractattention
+	docker push idinteraction/abc-classify
 clean:
-	rm -f .analysis .base .cppmt .tracking .video
+	rm -f .analysis .base .cppmt .tracking .video .abc-extractattention .abc-classify
 	$(MAKE) -C cppmt clean
 	-docker stop `docker ps -aq`
 	-docker rm -fv `docker ps -aq`
@@ -62,3 +71,5 @@ really-clean: clean
 	-docker rmi idinteraction/cppmt
 	-docker rmi idinteraction/object-tracking
 	-docker rmi idinteraction/video
+	-docker rmi idinteraction/abc-extractattention
+	-docker rmi idinteraction/abc-classify
