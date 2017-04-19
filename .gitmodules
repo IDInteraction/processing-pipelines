@@ -33,3 +33,13 @@
 [submodule "openface/resources/OpenFace"]
 	path = openface/resources/OpenFace
 	url = https://github.com/TadasBaltrusaitis/OpenFace.git
+	url = git@github.com:IDInteraction/setBoundingBox.git
+[submodule "opencvBB/opencv-detection"]
+	path = opencvBB/opencv-detection
+	url = git@github.com:IDInteraction/opencv-detection.git
+[submodule "abc-extractattention/abc-display-tool"]
+	path = abc-extractattention/abc-display-tool
+	url = git@github.com:IDInteraction/abc-display-tool.git
+[submodule "abc-classifysweep/jobrunner"]
+	path = abc-classifysweep/jobrunner
+	url = git@github.com:mawds/jobrunner.git

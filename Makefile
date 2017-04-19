@@ -10,10 +10,9 @@
 # Author: Robert Haines
 #------------------------------------------------------------------------------
 
-<<<<<<< HEAD
-.PHONY: all analysis base cppmt tracking object-tracking video clean really-clean abc-extractattention abc-classify
+.PHONY: all analysis base cppmt tracking object-tracking video clean really-clean abc-extractattention abc-classify abc-classifysweep
 
-all: .analysis .base .cppmt .tracking .video .abc-extractattention .abc-classify
+all: .analysis .base .cppmt .tracking .video .abc-extractattention .abc-classify .abc-classifysweep 
 
 # Use empty targets to help make, but hide them as dotfiles.
 analysis: .analysis
@@ -88,6 +87,10 @@ video: .video
 .abc-classify: .base abc-classify/Dockerfile
 	docker build -t idinteraction/abc-classify abc-classify/
 	touch .abc-classify
+
+.abc-classifysweep: .base abc-classifysweep/Dockerfile abc-classifysweep/Makefile
+	docker build -t idinteraction/abc-classifysweep abc-classifysweep/
+	touch .abc-classifysweep
 
 upload: all
 	docker push idinteraction/analysis
