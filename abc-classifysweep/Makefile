@@ -14,7 +14,7 @@
 # lines for all 6 combinations of options. 
 #
 
-.PHONY: all cleanresults
+.PHONY: all cleanresults jobs
 
 jobfiledir=/idinteraction/jobs
 outputdir=/idinteraction/output
@@ -32,7 +32,7 @@ jobs: $(outputfiles)
 
 $(outputdir)/%.jobstat: $(jobfiledir)/%.job
 	# TODO check script has precisely 2 lines
-	mkdir -p $(shell head -1 $<) && cd $(shell head -1 $<) && /idinteraction/jobrunner/jobrunner.py "$(shell cat $< | head -2 | tail -1)" |/bin/bash 
+	mkdir -p $(shell head -1 $<) && cd $(shell head -1 $<) && /idinteraction/jobrunner/jobrunner.py '$(shell cat $< | head -2 | tail -1)' |tee jobscript.txt | /bin/bash 
 	echo $(shell head -1 $<) > $@
 
 
