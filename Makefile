@@ -84,11 +84,12 @@ video: .video
 	docker build -t idinteraction/abc-extractattention abc-extractattention/
 	touch .abc-extractattention
 
-.abc-classify: .base abc-classify/Dockerfile
+.abc-classify: .base abc-classify/Dockerfile abc-classify/abc-display-tool/abc-classify.py
 	docker build -t idinteraction/abc-classify abc-classify/
 	touch .abc-classify
 
-.abc-classifysweep: .base abc-classifysweep/Dockerfile abc-classifysweep/Makefile
+.abc-classifysweep: .base abc-classifysweep/Dockerfile abc-classifysweep/Makefile abc-classifysweep/jobrunner/jobrunner.py abc-classify/abc-display-tool/abc-classify.py
+
 	docker build -t idinteraction/abc-classifysweep abc-classifysweep/
 	touch .abc-classifysweep
 
