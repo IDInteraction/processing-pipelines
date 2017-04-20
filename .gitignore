@@ -16,4 +16,6 @@ cppmt/build/
 .abc-extractattention
 .abc-classify
 .abc-classifysweep
+.abc-tdr
+.openface
 
