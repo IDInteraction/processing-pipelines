@@ -43,3 +43,6 @@
 [submodule "abc-classifysweep/jobrunner"]
 	path = abc-classifysweep/jobrunner
 	url = git@github.com:mawds/jobrunner.git
+[submodule "abc-classify/abc-display-tool"]
+	path = abc-classify/abc-display-tool
+	url = git@github.com:IDInteraction/abc-display-tool.git
