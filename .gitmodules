@@ -46,3 +46,6 @@
 [submodule "abc-classify/abc-display-tool"]
 	path = abc-classify/abc-display-tool
 	url = git@github.com:IDInteraction/abc-display-tool.git
+[submodule "abc-classifysweep/abc-display-tool"]
+	path = abc-classifysweep/abc-display-tool
+	url = git@github.com:IDInteraction/abc-display-tool.git
