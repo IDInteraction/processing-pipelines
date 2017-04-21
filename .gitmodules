@@ -48,3 +48,6 @@
 [submodule "openface/resources/OpenFace"]
 	path = openface/resources/OpenFace
 	url = git@github.com:TadasBaltrusaitis/OpenFace.git
+[submodule "depthTracking/abc-display-tool"]
+	path = depthTracking/abc-display-tool
+	url = git@github.com:IDInteraction/abc-display-tool.git
