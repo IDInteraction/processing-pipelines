@@ -89,7 +89,7 @@ video: .video
 	touch .abc-classify
 
 .dockerdepth: .base depthTracking/Dockerfile depthTracking/Makefile
-	docker build -t idinteraction/dockerdepth depthtracking/
+	docker build -t idinteraction/dockerdepth depthTracking/
 	touch .dockerdepth
 
 
