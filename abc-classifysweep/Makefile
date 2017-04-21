@@ -26,7 +26,7 @@ all: jobs
 
 cleanresults: $(outputfiles)
 	$(foreach job,$^, rm -rf $(shell head -1 $(job)) && ) :
-	rm $^
+	rm -f $^
 
 jobs: $(outputfiles)
 
