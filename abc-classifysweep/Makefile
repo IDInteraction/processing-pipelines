@@ -40,7 +40,7 @@ jobs: $(outputfiles)
 
 $(outputdir)/%.jobstat: $(jobfiledir)/%.job
 	# TODO check script has precisely 2 lines 
-	/idinteraction/jobrunner/jobrunner.py '$(shell cat $< | head -2 | tail -1)' --extvarfile  p:$(resultsdir)/participantcodes.txt > $(basename $@).sh && bash $(basename $@).sh  && echo $(shell head -1 $<) > $@ 
+	mkdir -p $(shell head -1 $<) && cd $(shell head -1 $<) && /idinteraction/jobrunner/jobrunner.py '$(shell cat $< | head -2 | tail -1)' --extvarfile  p:$(resultsdir)/participantcodes.txt > $(basename $@).sh && bash $(basename $@).sh  && echo $(shell head -1 $<) > $@ 
 
 
 
