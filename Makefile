@@ -93,7 +93,7 @@ video: .video
 	touch .dockerdepth
 
 
-.abc-classifysweep: .base abc-classifysweep/Dockerfile abc-classifysweep/Makefile abc-classifysweep/jobrunner/jobrunner.py abc-classify/abc-display-tool/abc-classify.py
+.abc-classifysweep: .base abc-classifysweep/Dockerfile abc-classifysweep/Makefile abc-classifysweep/jobrunner/jobrunner.py abc-classifysweep/jobrunner/processjob.py abc-classify/abc-display-tool/abc-classify.py
 
 	docker build -t idinteraction/abc-classifysweep abc-classifysweep/
 	touch .abc-classifysweep
