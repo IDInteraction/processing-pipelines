@@ -16,24 +16,31 @@
 
 .PHONY: all cleanresults jobs
 
+# jobfiledir contains the job files
 jobfiledir=/idinteraction/jobs
+# outputdir contains the outputs of the jobs
 outputdir=/idinteraction/output
+# results dir contains the (mainly tracking) data used 
+# by the classifier. The list of participant codes to process is also stored
+# here.  This is mounted ro in the Docker image
+resultsdir=/idinteraction/results
 
 jobfiles=$(wildcard $(jobfiledir)/*.job)
 outputfiles=$(patsubst $(jobfiledir)/%.job, $(outputdir)/%.jobstat, $(jobfiles))
 
 all: jobs
 
-cleanresults: $(outputfiles)
-	$(foreach job,$^, rm -rf $(shell head -1 $(job)) && ) :
-	rm -f $^
+cleanresults: 
+	$(foreach job,$(outputfiles), rm -rf $(shell head -1 $(job)) && ) :
+	rm  $(outputfiles)
+	rm $(outputdir)/*.sh
+	
 
 jobs: $(outputfiles)
 
 $(outputdir)/%.jobstat: $(jobfiledir)/%.job
-	# TODO check script has precisely 2 lines
-	mkdir -p $(shell head -1 $<) && cd $(shell head -1 $<) && /idinteraction/jobrunner/jobrunner.py '$(shell cat $< | head -2 | tail -1)' |tee jobscript.txt | /bin/bash 
-	echo $(shell head -1 $<) > $@
+	# TODO check script has precisely 2 lines 
+	/idinteraction/jobrunner/jobrunner.py '$(shell cat $< | head -2 | tail -1)' --extvarfile  p:$(resultsdir)/participantcodes.txt > $(basename $@).sh && bash $(basename $@).sh  && echo $(shell head -1 $<) > $@ 
 
 
 
