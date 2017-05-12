@@ -19,3 +19,5 @@ cppmt/build/
 .abc-tdr
 .openface
 .dockerdepth
+.sklearn
+

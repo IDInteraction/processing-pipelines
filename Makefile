@@ -10,9 +10,9 @@
 # Author: Robert Haines
 #------------------------------------------------------------------------------
 
-.PHONY: all analysis base cppmt tracking object-tracking video clean really-clean abc-extractattention abc-classify abc-classifysweep dockerdepth checksync
+.PHONY: all analysis base cppmt sklearn tracking object-tracking video clean really-clean abc-extractattention abc-classify abc-classifysweep dockerdepth checksync
 
-all: .analysis .base .cppmt .tracking .video .abc-extractattention .abc-classify .abc-classifysweep .dockerdepth .checksync
+all: .analysis .base .cppmt .tracking .video .abc-extractattention .abc-classify .abc-classifysweep .dockerdepth .checksync .sklearn
 
 # Use empty targets to help make, but hide them as dotfiles.
 analysis: .analysis
@@ -40,6 +40,10 @@ cppmt: .cppmt
 	$(MAKE) -C cppmt
 	docker build -t idinteraction/cppmt cppmt/
 	touch .cppmt
+sklearn: .sklearn
+.sklearn: .base sklearn/Dockerfile
+	docker build -t idinteraction/sklearn sklearn
+	touch .sklearn
 
 tracking: .tracking
 object-tracking: .tracking
@@ -88,7 +92,7 @@ video: .video
 	docker build -t idinteraction/abc-classify abc-classify/
 	touch .abc-classify
 
-.dockerdepth: .base depthTracking/Dockerfile depthTracking/Makefile
+.dockerdepth: .base .sklearn depthTracking/Dockerfile depthTracking/Makefile
 	docker build -t idinteraction/dockerdepth depthTracking/
 	touch .dockerdepth
 
@@ -113,8 +117,9 @@ upload: all
 	docker push idinteraction/abc-classifysweep
 	docker push idinteraction/dockerdepth
 	docker push idinteraction/checksync
+	docker push idinteraction/sklearn
 clean:
-	rm -f .analysis .base .cppmt .tracking .video .abc-extractattention .abc-classify .dockerdepth .checksync 
+	rm -f .analysis .base .cppmt .tracking .video .abc-extractattention .abc-classify .dockerdepth .checksync .sklearn
 	$(MAKE) -C cppmt clean
 	-docker stop `docker ps -aq`
 	-docker rm -fv `docker ps -aq`
@@ -131,4 +136,5 @@ really-clean: clean
 	-docker rmi idinteraction/abc-classifysweep
 	-docker rmi idinteraction/dockerdepth
 	-docker rmi idinteraction/checksync
+	-docker rmi idinteraction/sklearn
 

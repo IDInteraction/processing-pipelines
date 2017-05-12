@@ -54,3 +54,6 @@
 [submodule "abc-checksync/abc-display-tool"]
 	path = abc-checksync/abc-display-tool
 	url = git@github.com:IDInteraction/abc-display-tool.git
+[submodule "object-tracking-kinect/abc-display-tool"]
+	path = object-tracking-kinect/abc-display-tool
+	url = git@github.com:IDInteraction/abc-display-tool.git
