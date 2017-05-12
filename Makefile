@@ -10,9 +10,9 @@
 # Author: Robert Haines
 #------------------------------------------------------------------------------
 
-.PHONY: all analysis base cppmt tracking object-tracking video clean really-clean abc-extractattention abc-classify abc-classifysweep dockerdepth
+.PHONY: all analysis base cppmt tracking object-tracking video clean really-clean abc-extractattention abc-classify abc-classifysweep dockerdepth checksync
 
-all: .analysis .base .cppmt .tracking .video .abc-extractattention .abc-classify .abc-classifysweep .dockerdepth
+all: .analysis .base .cppmt .tracking .video .abc-extractattention .abc-classify .abc-classifysweep .dockerdepth .checksync
 
 # Use empty targets to help make, but hide them as dotfiles.
 analysis: .analysis
@@ -92,6 +92,9 @@ video: .video
 	docker build -t idinteraction/dockerdepth depthTracking/
 	touch .dockerdepth
 
+.checksync: .opencv abc-checksync/Dockerfile abc-checksync/Makefile
+	docker build -t idinteraction/checksync abc-checksync/
+	touch .checksync
 
 .abc-classifysweep: .base abc-classifysweep/Dockerfile abc-classifysweep/Makefile abc-classifysweep/jobrunner/jobrunner.py abc-classifysweep/jobrunner/processjob.py abc-classify/abc-display-tool/abc-classify.py
 
@@ -109,8 +112,9 @@ upload: all
 	docker push idinteraction/abc-classify
 	docker push idinteraction/abc-classifysweep
 	docker push idinteraction/dockerdepth
+	docker push idinteraction/checksync
 clean:
-	rm -f .analysis .base .cppmt .tracking .video .abc-extractattention .abc-classify .dockerdepth
+	rm -f .analysis .base .cppmt .tracking .video .abc-extractattention .abc-classify .dockerdepth .checksync 
 	$(MAKE) -C cppmt clean
 	-docker stop `docker ps -aq`
 	-docker rm -fv `docker ps -aq`
@@ -126,4 +130,5 @@ really-clean: clean
 	-docker rmi idinteraction/abc-classify
 	-docker rmi idinteraction/abc-classifysweep
 	-docker rmi idinteraction/dockerdepth
+	-docker rmi idinteraction/checksync
 
