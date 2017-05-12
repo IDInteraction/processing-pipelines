@@ -51,3 +51,6 @@
 [submodule "depthTracking/abc-display-tool"]
 	path = depthTracking/abc-display-tool
 	url = git@github.com:IDInteraction/abc-display-tool.git
+[submodule "abc-checksync/abc-display-tool"]
+	path = abc-checksync/abc-display-tool
+	url = git@github.com:IDInteraction/abc-display-tool.git

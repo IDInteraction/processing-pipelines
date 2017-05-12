@@ -15,8 +15,8 @@
 # This makefile takes a series of depth frames and applies PCA and
 # mixture model analysis to both parts of the experiment, for each participant
 # The depth range of interest:
-mindepth=710
-maxdepth=1710
+mindepth?=710
+maxdepth?=1710
 
 # Contains frame offsets between Kinect and Webcam time and 
 # when each part of the experiment started
