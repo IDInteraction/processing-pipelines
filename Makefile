@@ -10,9 +10,9 @@
 # Author: Robert Haines
 #------------------------------------------------------------------------------
 
-.PHONY: all analysis base cppmt sklearn tracking object-tracking video clean really-clean abc-extractattention abc-classify abc-classifysweep dockerdepth checksync
+.PHONY: all analysis base cppmt sklearn tracking object-tracking video clean really-clean abc-extractattention abc-classify abc-classifysweep dockerdepth checksync object-tracking-kinect
 
-all: .analysis .base .cppmt .tracking .video .abc-extractattention .abc-classify .abc-classifysweep .dockerdepth .checksync .sklearn
+all: .analysis .base .cppmt .tracking .video .abc-extractattention .abc-classify .abc-classifysweep .dockerdepth .checksync .sklearn .object-tracking-kinect
 
 # Use empty targets to help make, but hide them as dotfiles.
 analysis: .analysis
@@ -35,11 +35,18 @@ abc-tdr: .abc-tdr
 	docker build -t idinteraction/abc-tdr abc-tdr
 	touch .abc-tdr
 
+object-tracking-kinect: .object-tracking-kinect
+.object-tracking-kinect: .base object-tracking-kinect/Dockerfile object-tracking-kinect/Makefile object-tracking-kinect/resources/Makefile
+	$(MAKE) -C object-tracking-kinect
+	docker build -t idinteraction/object-tracking-kinect object-tracking-kinect/
+	touch .object-tracking-kinect
+
 cppmt: .cppmt
 .cppmt: .base cppmt/Dockerfile cppmt/Makefile
 	$(MAKE) -C cppmt
 	docker build -t idinteraction/cppmt cppmt/
 	touch .cppmt
+
 sklearn: .sklearn
 .sklearn: .base sklearn/Dockerfile
 	docker build -t idinteraction/sklearn sklearn
@@ -118,8 +125,9 @@ upload: all
 	docker push idinteraction/dockerdepth
 	docker push idinteraction/checksync
 	docker push idinteraction/sklearn
+	docker push idinteraction/object-tracking-kinect
 clean:
-	rm -f .analysis .base .cppmt .tracking .video .abc-extractattention .abc-classify .dockerdepth .checksync .sklearn
+	rm -f .analysis .base .cppmt .tracking .video .abc-extractattention .abc-classify .dockerdepth .checksync .sklearn .object-tracking-kinect
 	$(MAKE) -C cppmt clean
 	-docker stop `docker ps -aq`
 	-docker rm -fv `docker ps -aq`
@@ -137,4 +145,5 @@ really-clean: clean
 	-docker rmi idinteraction/dockerdepth
 	-docker rmi idinteraction/checksync
 	-docker rmi idinteraction/sklearn
+	-docker rmi idinteraction/object-tracking-kinect
 
