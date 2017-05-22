@@ -89,11 +89,12 @@ $(tempdir)/%.pca1: $(framesourcedir)/% $(outdir)/%.start1 $(outdir)/%.end1
 $(tempdir)/%.pca2: $(framesourcedir)/% $(outdir)/%.start2 $(outdir)/%.end2
 	python $(codedir)/depthPCA.py --infolder $</ --frameprefix depthDepth --noshuffle --mindepth=$(mindepth) --maxdepth=$(maxdepth) --startframe=`cat $(word 2, $^)` --endframe=`cat $(word 3, $^)` --outfile=$@ --pickle $@.pickle
 
+# Mixture model
 $(tempdir)/%.mixture1: $(framesourcedir)/% $(outdir)/%.start1 $(outdir)/%.end1
-	python $(codedir)/fitmixture.py --infolder $</ --frameprefix depthDepth --numcomponents=0 --componentsample=20 --maxcomponents=10 --startframe=`cat $(word 2, $^)` --endframe=`cat $(word 3, $^)` --outfile=$@ --pickle --mindepth=$(mindepth) --maxdepth=$(maxdepth)
+	python $(codedir)/fitmixture.py --infolder $</ --frameprefix depthDepth --numcomponents=0 --componentsample=20 --maxcomponents=10 --startframe=`cat $(word 2, $^)` --endframe=`cat $(word 3, $^)` --outfile=$@ --pickle --mindepth=$(mindepth) --maxdepth=$(maxdepth) --rngstate=$@.rng
 
 $(tempdir)/%.mixture2: $(framesourcedir)/% $(outdir)/%.start2 $(outdir)/%.end2
-	python $(codedir)/fitmixture.py --infolder $</ --frameprefix depthDepth --numcomponents=0 --componentsample=20 --maxcomponents=10 --startframe=`cat $(word 2, $^)` --endframe=`cat $(word 3, $^)` --outfile=$@ --pickle --mindepth=$(mindepth) --maxdepth=$(maxdepth)
+	python $(codedir)/fitmixture.py --infolder $</ --frameprefix depthDepth --numcomponents=0 --componentsample=20 --maxcomponents=10 --startframe=`cat $(word 2, $^)` --endframe=`cat $(word 3, $^)` --outfile=$@ --pickle --mindepth=$(mindepth) --maxdepth=$(maxdepth) --rngstate=$@.rng
 
 # All of the tracking is done in the Kinect timebase.  We need to map it
 # back to webcam times for onward analysis 
