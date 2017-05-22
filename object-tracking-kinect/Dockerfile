@@ -22,6 +22,9 @@ COPY abc-display-tool/  $IDI_HOME/abc-display-tool
 COPY resources/Makefile $IDI_HOME
 
 RUN mkdir $IDI_HOME/tempdir && mkdir $IDI_HOME/temptimedir
+RUN mkdir $IDI_HOME/tempdir/part1 && mkdir $IDI_HOME/tempdir/part2
+RUN mkdir $IDI_HOME/temptimedir/part1 && mkdir $IDI_HOME/temptimedir/part2
+ 
  
 COPY build/CppMT/cmt $IDI_HOME/cmt
 # Get git commit ID in image
@@ -30,3 +33,5 @@ ENV GIT_COMMIT ${GIT_COMMIT}
 
 ENTRYPOINT ["/usr/bin/make"]
 CMD ["all"]
+#ENTRYPOINT ["/bin/bash"]
+

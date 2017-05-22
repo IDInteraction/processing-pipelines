@@ -21,4 +21,4 @@ cppmt/build/
 .dockerdepth
 .sklearn
 .object-tracking-kinect
-
+object-tracking-kinect/build/

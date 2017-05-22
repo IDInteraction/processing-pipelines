@@ -40,12 +40,12 @@ temptimedir=./temptimedir
 # Contains the Kinect video data for each participant
 videodir=./video
 .PHONY: participants gentimes all
-.PRECIOUS: $(outdir)/% $(tempdir)/% $(temptimedir)/%.start1  $(temptimedir)/%.start2 $(temptimedir)/%.end1  $(temptimedir)/%.end2 $(bboxdir)/part1/%.bbox $(bboxdir)/part2/%.bbox $(outdir)/part1/%.csv $(outdir)/part2/%.csv
+.PRECIOUS: $(outdir)/% $(tempdir)/% $(tempdir)/part1/%.csv $(tempdir)/part2/%.csv $(temptimedir)/%.start1  $(temptimedir)/%.start2 $(bboxdir)/part1/%.bbox $(bboxdir)/part2/%.bbox $(outdir)/part1/%.csv $(outdir)/part2/%.csv
 
 groundtruthfiles=$(wildcard $(groundtruthdir)/P??_attention.txt)
 
 participants = $(subst $(groundtruthdir)/,$(empty),$(subst _attention.txt,$(empty),$(groundtruthfiles)))
-PHONY: all gentimes start1 start2 end1 end2 pca pca1 pca2 mixture mixture1 mixture2
+PHONY: all gentimes start1 start2 
 #all: ; $(info  [${bbox1}])echo Hello world
 all: track 
 
@@ -56,21 +56,14 @@ start1: $(patsubst $(videodir)/%, $(bboxdir)/%.start1, $(videofiles))
 start2: $(patsubst $(videodir)/%, $(bboxdir)/%.start2, $(videofiles))
 
 track: track1 track2
-track1: bbox1 $(addsuffix .csv, $(basename $(basename $(patsubst $(videodir)/%, $(outdir)/part1/%.csv, $(videofiles)))))
-track2: bbox2 $(addsuffix .csv, $(basename $(basename $(patsubst $(videodir)/%, $(outdir)/part2/%.csv, $(videofiles)))))
+# removed bbox1/2 dependencies from rule below
+track1: $(addsuffix .csv, $(basename $(basename $(patsubst $(videodir)/%, $(outdir)/part1/%.csv, $(videofiles)))))
+track2: $(addsuffix .csv, $(basename $(basename $(patsubst $(videodir)/%, $(outdir)/part2/%.csv, $(videofiles)))))
 
 bbox: bbox1 bbox2
 bbox1: $(addsuffix .bbox, $(basename $(basename $(patsubst $(videodir)/%, $(bboxdir)/part1/%.bbox, $(videofiles)))))
 bbox2: $(addsuffix .bbox, $(basename $(basename $(patsubst $(videodir)/%, $(bboxdir)/part2/%.bbox, $(videofiles)))))
 
-
-#pca: pca1 pca2
-#pca1: $(patsubst $(framesourcedir)%, $(outdir)/%.pca1, $(participants))
-#pca2: $(patsubst $(framesourcedir)%, $(outdir)/%.pca2, $(participants))
-#
-#mixture: mixture1 mixture2
-#mixture1: $(patsubst $(framesourcedir)%, $(outdir)/%.mixture1, $(participants))
-#mixture2: $(patsubst $(framesourcedir)%, $(outdir)/%.mixture2, $(participants))
 
 # Extract the (kinect) frames each part of the experiment starts/ends at
 # Is it possible to condense these rules into one?
@@ -81,11 +74,6 @@ $(temptimedir)/%.start1: $(videodir)/%
 $(temptimedir)/%.start2: $(videodir)/%
 	$(codedir)/abc-extractAttention.py --attentionfile $(groundtruthdir)/$(notdir $(basename $(subst $(videostem),$(empty),$@)))_attention.txt --outputfile $@ --participant $(notdir $(basename $(subst $(videostem),$(empty),$@))) --event start2 --externaleventfile $(controldir)/transitionAnnotations.csv --offsetfile $(controldir)/frameoffsets.csv --framemap $(framemapdir)/$(notdir $(basename $(subst $(videostem),$(empty),$@)))_framelist.csv
 
-#$(temptimedir)/%.end1: $(framesourcedir)/%
-#	$(codedir)/abc-extractAttention.py --attentionfile $(attentiondir)/$(notdir $(basename $@))_attention.txt --outputfile $@ --participant $(notdir $(basename $@)) --event end1 --externaleventfile $(controldir)/transitionAnnotations.csv --offsetfile $(controldir)/frameoffsets.csv --framemap $(framemapdir)/$(notdir $(basename $@))_framelist.csv
-#
-#$(temptimedir)/%.end2: $(framesourcedir)/%
-#	$(codedir)/abc-extractAttention.py --attentionfile $(attentiondir)/$(notdir $(basename $@))_attention.txt --outputfile $@ --participant $(notdir $(basename $@)) --event end2 --externaleventfile $(controldir)/transitionAnnotations.csv --offsetfile $(controldir)/frameoffsets.csv --framemap $(framemapdir)/$(notdir $(basename $@))_framelist.csv
 
 # The files that come out of the above rules include a header and
 # value to plot the event  on the vidoe frame.  We want the frame number
@@ -101,16 +89,16 @@ $(bboxdir)/%: $(temptimedir)/%
 $(bboxdir)/part1/%.bbox: $(videodir)/%.mp4 $(bboxdir)/%.mp4.start1
 	$(cppmt) --skip=`cat $(word 2, $^)` --process-frames=1 $< | head -1 | cut -d" " -f5 | tr -d '\n' > $@
 
-$(outdir)/part1/%.csv: $(videodir)/%.mp4 $(bboxdir)/%.mp4.start1 $(bboxdir)/part1/%.bbox
+$(tempdir)/part1/%.csv: $(videodir)/%.mp4  $(bboxdir)/%.mp4.start1 $(bboxdir)/part1/%.bbox
 	$(cppmt) --skip=`cat $(word 2, $^)` --bbox=`cat $(word 3, $^)` --with-rotation --quiet --output-file=$@ $<
 
 $(bboxdir)/part2/%.bbox: $(videodir)/%.mp4 $(bboxdir)/%.mp4.start2
 	$(cppmt) --skip=`cat $(word 2, $^)` --process-frames=1 $< | head -1 | cut -d" " -f5 | tr -d '\n' > $@
 
-$(outdir)/part2/%.csv: $(videodir)/%.mp4 $(bboxdir)/%.mp4.start2 $(bboxdir)/part1/%.bbox
+$(tempdir)/part2/%.csv: $(videodir)/%.mp4  $(bboxdir)/%.mp4.start2 $(bboxdir)/part1/%.bbox
 	$(cppmt) --skip=`cat $(word 2, $^)` --bbox=`cat $(word 3, $^)` --with-rotation --quiet --output-file=$@ $<
 
 # All of the tracking is done in the Kinect timebase.  We need to map it
 # back to webcam times for onward analysis 
 $(outdir)/%: $(tempdir)/%
-	python $(codedir)/remapFrames.py --infile $< --outfile $@ --framemap $(framemapdir)/$(notdir $(basename $@))_framelist.csv --frameoffsetfile $(controldir)/frameoffsets.csv --participant $(notdir $(basename $@))
+	python $(codedir)/remapFrames.py --infile $< --outfile $@ --framemap $(framemapdir)/$(subst $(basename $(videostem)),$(empty),$(basename $(notdir $@)))_framelist.csv --frameoffsetfile $(controldir)/frameoffsets.csv --participant $(subst $(basename $(videostem)), $(empty),$(basename $(notdir $@)))
