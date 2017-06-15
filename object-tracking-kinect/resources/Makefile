@@ -95,7 +95,7 @@ $(tempdir)/part1/%.csv: $(videodir)/%.mp4  $(bboxdir)/%.mp4.start1 $(bboxdir)/pa
 $(bboxdir)/part2/%.bbox: $(videodir)/%.mp4 $(bboxdir)/%.mp4.start2
 	$(cppmt) --skip=`cat $(word 2, $^)` --process-frames=1 $< | head -1 | cut -d" " -f5 | tr -d '\n' > $@
 
-$(tempdir)/part2/%.csv: $(videodir)/%.mp4  $(bboxdir)/%.mp4.start2 $(bboxdir)/part1/%.bbox
+$(tempdir)/part2/%.csv: $(videodir)/%.mp4  $(bboxdir)/%.mp4.start2 $(bboxdir)/part2/%.bbox
 	$(cppmt) --skip=`cat $(word 2, $^)` --bbox=`cat $(word 3, $^)` --with-rotation --quiet --output-file=$@ $<
 
 # All of the tracking is done in the Kinect timebase.  We need to map it
