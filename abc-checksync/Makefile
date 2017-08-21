@@ -41,7 +41,7 @@ processedvideo: $(processedvideofiles)
 
 PHONY: all processedgt processedvideo 
 
-all: ; $(info  [${processedvideofiles}])echo Hello world
+all:  $(outputdir)/%_check.avi
 
 $(outputdir)/%_processedGT.csv: $(groundtruthdir)/%_attention.txt 
 	./abc-display-tool/abc-extractAttention.py --attentionfile $< --participant $(subst $(groundtruthdir)/,$(empty),$(subst _attention.txt,$(empty),$<)) --framemap $(framemapdir)/$(subst $(groundtruthdir)/,$(empty),$(subst _attention.txt,$(empty),$<))_framelist.csv --offsetfile $(offsetdir)/frameoffsets.csv --outputfile $@
